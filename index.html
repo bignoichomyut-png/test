@@ -238,6 +238,20 @@
         .rotate-90 {
             transform: rotate(90deg);
         }
+
+        /* ENHANCED: Stronger Neon Glow Focus for Input */
+        .tech-input {
+            border: 1px solid transparent;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .tech-input:focus {
+            outline: none !important;
+            border-color: #37B2B5; /* Stronger visibility of the actual line */
+            box-shadow: 
+                0 0 0 3px rgba(55, 178, 181, 0.3), /* Outer ring/glow */
+                0 0 10px rgba(55, 178, 181, 0.5), /* Medium glow */
+                0 0 15px rgba(55, 178, 181, 0.2); /* Faint large glow */
+        }
     </style>
 </head>
 <body class="overflow-hidden h-screen w-screen flex items-center justify-center bg-[#f0f2f5]">
@@ -246,10 +260,10 @@
     <div class="flex bg-white text-gray-800 w-full h-full rounded-2xl shadow-2xl overflow-hidden relative">
 
         <!-- ========================================== -->
-        <!-- LAYOUT 1: TOOLSTRIP (25% or 80px)          -->
-        <!-- UPDATED: w-[20%] to w-[25%] -->
+        <!-- LAYOUT 1: TOOLSTRIP (23% or 80px)          -->
+        <!-- UPDATED: w-[25%] to w-[23%] -->
         <!-- ========================================== -->
-        <div id="sidebar" class="layout-panel w-[25%] min-w-[80px] flex-shrink-0 bg-white z-30 flex flex-col sidebar">
+        <div id="sidebar" class="layout-panel w-[23%] min-w-[80px] flex-shrink-0 bg-white z-30 flex flex-col sidebar">
             
             <!-- Header Icon & Collapse Button -->
             <div id="sidebar-header" class="h-20 flex items-center justify-between px-3 flex-shrink-0 transition-all duration-300 overflow-hidden">
@@ -519,10 +533,10 @@
         </div>
         
         <!-- ========================================== -->
-        <!-- LAYOUT 2: CHAT PANEL (28%)                 -->
-        <!-- UPDATED: w-[30%] to w-[28%] -->
+        <!-- LAYOUT 2: CHAT PANEL (29%)                 -->
+        <!-- UPDATED: w-[28%] to w-[29%] -->
         <!-- ========================================== -->
-        <div id="chat-panel" class="layout-panel w-[28%] min-w-[300px] flex flex-col bg-white flex-shrink-0 relative z-20 shadow-[2px_0_20px_rgba(0,0,0,0.02)]">
+        <div id="chat-panel" class="layout-panel w-[29%] min-w-[300px] flex flex-col bg-white flex-shrink-0 relative z-20 shadow-[2px_0_20px_rgba(0,0,0,0.02)]">
             <header class="p-4 h-20 flex flex-col justify-center flex-shrink-0">
                 <h2 class="text-lg font-semibold text-gray-800">ช่องสั่งงาน AI</h2>
                 <p class="text-sm text-gray-500">พิมพ์คำสั่งของคุณเพื่อสร้างโค้ด</p>
@@ -550,6 +564,7 @@
 
             <footer class="p-4 bg-white flex-shrink-0">
                 <div class="input-container">
+                    <!-- REMOVED focus:ring-2 focus:ring-gemini-primary focus:border-gemini-primary focus:outline-none to use custom CSS for stronger glow -->
                     <textarea id="prompt-input" rows="2" class="w-full p-3 bg-gray-50 rounded-xl transition duration-150 resize-none shadow-inner text-sm focus:bg-white tech-input" placeholder="พิมพ์คำสั่ง..."></textarea>
                     <button id="send-button" class="send-button-inside flex items-center justify-center bg-gradient-to-r from-[#53D4D6] to-[#37B2B5] text-white font-semibold rounded-full shadow-lg hover:from-[#37B2B5] hover:to-[#2A9B9E]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path></svg>
@@ -559,10 +574,10 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- LAYOUT 3: OUTPUT PANEL (47%)               -->
-        <!-- UPDATED: w-[50%] to w-[47%] -->
+        <!-- LAYOUT 3: OUTPUT PANEL (48%)               -->
+        <!-- UPDATED: w-[47%] to w-[48%] -->
         <!-- ========================================== -->
-        <div id="output-panel" class="layout-panel w-[47%] flex flex-col flex-1 bg-white min-w-0">
+        <div id="output-panel" class="layout-panel w-[48%] flex flex-col flex-1 bg-white min-w-0">
             <header class="p-4 bg-white flex items-center justify-between h-20 flex-shrink-0">
                 <h2 class="text-lg font-semibold text-gray-800">แสดงผลลัพธ์</h2>
                 <div class="flex items-center space-x-4">
@@ -653,12 +668,15 @@
         // Project Data (Updated with Apple-style websites)
         const projectData = {
             appleProduct: {
-                code: `<!-- Apple Style Product Page -->\n<div class="font-inter bg-white min-h-full">\n    <!-- Navbar -->\n    <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">\n        <div class="font-bold text-xl tracking-tight">Titanium.</div>\n        <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">\n            <a href="#" class="hover:text-black transition">Overview</a>\n            <a href="#" class="hover:text-black transition">Specs</a>\n            <a href="#" class="hover:text-black transition">Compare</a>\n        </div>\n        <button class="bg-[#0071e3] text-white px-3 py-1 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>\n    </nav>\n\n    <!-- Hero -->\n    <div class="text-center pt-16 pb-24 px-4">\n        <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>\n        <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>\n        <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">\n            <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">></span></a>\n            <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">></span></a>\n        </div>\n        <!-- Mockup Image -->\n        <div class="max-w-4xl mx-auto">\n             <div class="aspect-[16/9] bg-gray-100 rounded-3xl flex items-center justify-center shadow-sm">\n                <span class="text-gray-300 font-bold text-4xl">Product Image Mockup</span>\n             </div>\n        </div>\n    </div>\n</div>`,
-                preview: `<div class="font-inter bg-white min-h-full">\n                            <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">\n                                <div class="font-bold text-xl tracking-tight text-black">Titanium.</div>\n                                <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">\n                                    <a href="#" class="hover:text-black transition">Overview</a>\n                                    <a href="#" class="hover:text-black transition">Specs</a>\n                                    <a href="#" class="hover:text-black transition">Compare</a>\n                                </div>\n                                <button class="bg-[#0071e3] text-white px-4 py-1.5 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>\n                            </nav>\n                            <div class="text-center pt-16 pb-24 px-4">\n                                <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>\n                                <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>\n                                <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">\n                                    <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">›</span></a>\n                                    <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">›</span></a>\n                                </div>\n                                <div class="max-w-4xl mx-auto">\n                                     <div class="aspect-[16/9] bg-gradient-to-tr from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center shadow-inner">\n                                        <div class="w-1/2 h-1/2 bg-gray-300 rounded-xl flex items-center justify-center text-gray-500">Titanium Frame</div>\n                                     </div>\n                                </div>\n                            </div>\n                        </div>`
+                code: `<!-- Apple Style Product Page -->\n<div class="font-inter bg-white min-h-full">\n    <!-- Navbar -->\n    <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">\n        <div class="font-bold text-xl tracking-tight">Titanium.</div>\n        <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">\n            <a href="#" class="hover:text-black transition">Overview</a>\n            <a href="#" class="hover:text-black transition">Specs</a>\n            <a href="#" class="hover:text-black transition">Compare</a>\n        </div>\n        <button class="bg-[#0071e3] text-white px-3 py-1 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>\n    </nav>\n\n    <!-- Hero -->\n    <div class="text-center pt-16 pb-24 px-4">\n        <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>\n        <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>\n        <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">\n            <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">></span></a>\n            <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">></span></a>
+        </div>\n        <!-- Mockup Image -->\n        <div class="max-w-4xl mx-auto">\n             <div class="aspect-[16/9] bg-gray-100 rounded-3xl flex items-center justify-center shadow-sm">\n                <span class="text-gray-300 font-bold text-4xl">Product Image Mockup</span>\n             </div>\n        </div>\n    </div>\n</div>`,
+                preview: `<div class="font-inter bg-white min-h-full">\n                            <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">\n                                <div class="font-bold text-xl tracking-tight text-black">Titanium.</div>\n                                <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">\n                                    <a href="#" class="hover:text-black transition">Overview</a>\n                                    <a href="#" class="hover:text-black transition">Specs</a>\n                                    <a href="#" class="hover:text-black transition">Compare</a>\n                                </div>\n                                <button class="bg-[#0071e3] text-white px-4 py-1.5 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>\n                            </nav>\n                            <div class="text-center pt-16 pb-24 px-4">\n                                <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>\n                                <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>\n                                <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">\n                                    <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">›</span></a>\n                                    <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">›</span></a>
+                                </div>\n                                <div class="max-w-4xl mx-auto">\n                                     <div class="aspect-[16/9] bg-gradient-to-tr from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center shadow-inner">\n                                        <div class="w-1/2 h-1/2 bg-gray-300 rounded-xl flex items-center justify-center text-gray-500">Titanium Frame</div>\n                                     </div>\n                                </div>\n                            </div>\n                        </div>`
             },
             // ... (Other project data remains the same) ...
              marketplace: {
-                code: `<!-- E-Marketplace Hero -->\n<div class="p-8 bg-white min-h-full">\n    <header class="text-center mb-12">\n        <p class="text-sm uppercase tracking-widest text-gray-500">Curated Goods</p>\n        <h1 class="text-5xl font-extrabold text-gray-900 mt-2">The Minimalist Collection</h1>\n        <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">สินค้าคุณภาพเยี่ยมที่คัดสรรมาอย่างพิถีพิถัน</p>\n    </header>\n    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">\n        <!-- Items would go here -->\n        <div class="bg-gray-50 border border-gray-100 p-4 rounded-lg text-center">\n             <div class="h-40 bg-gray-200 rounded mb-4"></div>\n             <h3 class="font-bold">Minimal Lamp</h3>\n             <p class="text-teal-600">฿4,500</p>\n        </div>\n    </div>\n</div>`,
+                code: `<!-- E-Marketplace Hero -->\n<div class="p-8 bg-white min-h-full">\n    <header class="text-center mb-12">\n        <p class="text-sm uppercase tracking-widest text-gray-500">Curated Goods</p>\n        <h1 class="text-5xl font-extrabold text-gray-900 mt-2">The Minimalist Collection</h1>\n        <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">สินค้าคุณภาพเยี่ยมที่คัดสรรมาอย่างพิถีพิถัน</p>\n    </header>\n    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">\n        <!-- Items would go here -->\n        <div class="bg-gray-50 border border-gray-100 p-4 rounded-lg text-center">\n             <div class="h-40 bg-gray-200 rounded mb-4"></div>\n             <h3 class="font-bold">Minimal Lamp</h3>\n             <p class="text-teal-600">฿4,500</p>\n        </div>
+    </div>\n</div>`,
                 preview: `<div class="p-8 bg-white min-h-full font-sans">\n                            <header class="text-center mb-12">\n                                <p class="text-sm uppercase tracking-widest text-gray-500">Curated Goods</p>\n                                <h1 class="text-5xl font-extrabold text-gray-900 mt-2">The Minimalist Collection</h1>\n                                <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">สินค้าคุณภาพเยี่ยมที่คัดสรรมาอย่างพิถีพิถัน ด้วยดีไซน์ที่เรียบง่ายและทันสมัย</p>\n                            </header>\n                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">\n                                <div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-sm hover:shadow-xl transition duration-300">\n                                    <img src="https://placehold.co/400x400/D1D5DB/1F2937?text=Lamp" class="w-full h-auto object-cover rounded-md mb-4 aspect-square">\n                                    <h3 class="text-lg font-semibold text-gray-800">Minimalist Desk Lamp</h3>\n                                    <div class="flex justify-between items-center mt-3">\n                                        <span class="text-xl font-bold text-gray-900">4,990 B</span>\n                                        <button class="px-3 py-1 text-xs text-white bg-[#37B2B5] rounded-full">View</button>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>`
             }
         };
@@ -811,15 +829,15 @@
             closeAllSubMenus(); 
 
             if (isCollapsed) {
-                // EXPAND: 25% / 28% / 47%
+                // EXPAND: 23% / 29% / 48% (Updated widths)
                 sidebar.classList.remove('collapsed', 'w-[80px]');
-                sidebar.classList.add('w-[25%]'); // UPDATED
+                sidebar.classList.add('w-[23%]'); // UPDATED
                 
                 chatPanel.classList.remove('flex-grow', 'chat-flex-ratio');
-                chatPanel.classList.add('w-[28%]'); // UPDATED
+                chatPanel.classList.add('w-[29%]'); // UPDATED
                 
                 outputPanel.classList.remove('flex-grow', 'output-flex-ratio');
-                outputPanel.classList.add('w-[47%]'); // UPDATED
+                outputPanel.classList.add('w-[48%]'); // UPDATED
 
                 // FIX: Icon direction logic
                 sidebarToggle.classList.remove('rotate-180'); // Expanded (default) = Point Left (<)
@@ -840,14 +858,14 @@
 
             } else {
                 // COLLAPSE: 80px / remaining space (split 3:5 ratio)
-                sidebar.classList.remove('w-[25%]'); // UPDATED
+                sidebar.classList.remove('w-[23%]'); // UPDATED
                 sidebar.classList.add('collapsed', 'w-[80px]');
                 
                 // Set L2 and L3 to grow with the remaining space, based on 3:5 ratio
-                chatPanel.classList.remove('w-[28%]'); // UPDATED
+                chatPanel.classList.remove('w-[29%]'); // UPDATED
                 chatPanel.classList.add('flex-grow', 'chat-flex-ratio'); // 3 parts
 
-                outputPanel.classList.remove('w-[47%]'); // UPDATED
+                outputPanel.classList.remove('w-[48%]'); // UPDATED
                 outputPanel.classList.add('flex-grow', 'output-flex-ratio'); // 5 parts
 
                 // FIX: Icon direction logic
@@ -986,11 +1004,11 @@
         window.addEventListener('DOMContentLoaded', function() {
             // Set initial state
             sidebar.classList.remove('w-[80px]', 'collapsed');
-            sidebar.classList.add('w-[25%]'); // UPDATED
+            sidebar.classList.add('w-[23%]'); // UPDATED
             chatPanel.classList.remove('flex-grow', 'chat-flex-ratio');
-            chatPanel.classList.add('w-[28%]'); // UPDATED
+            chatPanel.classList.add('w-[29%]'); // UPDATED
             outputPanel.classList.remove('flex-grow', 'output-flex-ratio');
-            outputPanel.classList.add('w-[47%]'); // UPDATED
+            outputPanel.classList.add('w-[48%]'); // UPDATED
 
             // Load initial project
             codeContent.textContent = projectData.appleProduct.code;

@@ -8,7 +8,7 @@
     <!-- โหลด Google Fonts: Prompt & Inter (สำหรับสไตล์ Apple) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;700&family=Montserrat:wght@400;700&family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght==300;400;500;600;700&family=Roboto+Mono:wght@400;700&family=Montserrat:wght@400;700&family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     
     <!-- โหลด Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -350,13 +350,13 @@
                         <a href="#" data-project="appleVision" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
                              <span class="text-xs">Pro Vision Dark</span>
                         </a>
-                         <a href="#" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                         <a href="#" data-project="saasDashboard" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
                              <span class="text-xs">SaaS Dashboard</span>
                         </a>
-                        <a href="#" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                        <a href="#" data-project="portfolioPersonal" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
                              <span class="text-xs">Portfolio Personal</span>
                         </a>
-                        <a href="#" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                        <a href="#" data-project="weddingInvite" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
                              <span class="text-xs">Wedding Invitation</span>
                         </a>
                     </div>
@@ -373,13 +373,13 @@
                         <a href="#" data-project="appleVision" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
                             <span class="text-xs">Pro Vision (Dark Mode)</span>
                         </a>
-                        <a href="#" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                        <a href="#" data-project="saasDashboard" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
                             <span class="text-xs">SaaS Dashboard</span>
                         </a>
-                        <a href="#" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                        <a href="#" data-project="portfolioPersonal" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
                             <span class="text-xs">Portfolio Personal</span>
                         </a>
-                         <a href="#" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                         <a href="#" data-project="weddingInvite" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
                             <span class="text-xs">Wedding Invitation</span>
                         </a>
                         <div class="border-t border-gray-100 my-1"></div>
@@ -693,15 +693,35 @@
         const undoButton = document.getElementById('undo-button');
         const redoButton = document.getElementById('redo-button');
 
-        // Project Data (Updated with Apple-style websites)
+        // Project Data (Updated with mock data for all menu items)
         const projectData = {
             appleProduct: {
-                code: `<!-- Apple Style Product Page -->\n<div class="font-inter bg-white min-h-full">\n    <!-- Navbar -->\n    <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">\n        <div class="font-bold text-xl tracking-tight">Titanium.</div>\n        <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">\n            <a href="#" class="hover:text-black transition">Overview</a>\n            <a href="#" class="hover:text-black transition">Specs</a>\n            <a href="#" class="hover:text-black transition">Compare</a>\n        </div>\n        <button class="bg-[#0071e3] text-white px-3 py-1 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>\n    </nav>\n\n    <!-- Hero -->\n    <div class="text-center pt-16 pb-24 px-4">\n        <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>\n        <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>\n        <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">\n            <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">></span></a>\n            <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">></span></a>
+                code: `<!-- Titanium Series (Apple Style Product Page) -->\n<div class="font-inter bg-white min-h-full">\n    <!-- Navbar -->\n    <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">\n        <div class="font-bold text-xl tracking-tight">Titanium.</div>\n        <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">\n            <a href="#" class="hover:text-black transition">Overview</a>\n            <a href="#" class="hover:text-black transition">Specs</a>\n            <a href="#" class="hover:text-black transition">Compare</a>\n        </div>\n        <button class="bg-[#0071e3] text-white px-3 py-1 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>\n    </nav>\n\n    <!-- Hero -->\n    <div class="text-center pt-16 pb-24 px-4">\n        <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>\n        <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>\n        <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">\n            <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">></span></a>\n            <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">></span></a>
         </div>\n        <!-- Mockup Image -->\n        <div class="max-w-4xl mx-auto">\n             <div class="aspect-[16/9] bg-gray-100 rounded-3xl flex items-center justify-center shadow-sm">\n                <span class="text-gray-300 font-bold text-4xl">Product Image Mockup</span>\n             </div>\n        </div>\n    </div>\n</div>`,
                 preview: `<div class="font-inter bg-white min-h-full">\n                            <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">\n                                <div class="font-bold text-xl tracking-tight text-black">Titanium.</div>\n                                <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">\n                                    <a href="#" class="hover:text-black transition">Overview</a>\n                                    <a href="#" class="hover:text-black transition">Specs</a>\n                                    <a href="#" class="hover:text-black transition">Compare</a>\n                                </div>\n                                <button class="bg-[#0071e3] text-white px-4 py-1.5 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>\n                            </nav>\n                            <div class="text-center pt-16 pb-24 px-4">\n                                <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>\n                                <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>\n                                <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">\n                                    <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">›</span></a>\n                                    <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">›</span></a>
                                 </div>\n                                <div class="max-w-4xl mx-auto">\n                                     <div class="aspect-[16/9] bg-gradient-to-tr from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center shadow-inner">\n                                        <div class="w-1/2 h-1/2 bg-gray-300 rounded-xl flex items-center justify-center text-gray-500">Titanium Frame</div>\n                                     </div>\n                                </div>\n                            </div>\n                        </div>`
             },
-            // ... (Other project data remains the same) ...
+            appleGrid: {
+                code: `<!-- Bento Grid Layout (Design Portfolio) -->\n<div class="p-8 bg-gray-900 min-h-full font-inter">\n    <h1 class="text-4xl font-bold text-white mb-8">Bento Grid Layout</h1>\n    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">\n        <!-- Large Card -->\n        <div class="md:col-span-2 p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 aspect-[16/9] flex items-end">\n            <h2 class="text-2xl font-semibold text-primary-teal">Project Showcase</h2>\n        </div>\n        <!-- Small Card 1 -->\n        <div class="p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 flex flex-col justify-between aspect-square">\n            <span class="text-gray-400">Stats</span>\n            <p class="text-5xl font-extrabold text-white">45<span class="text-primary-teal">+</span></p>\n        </div>\n        <!-- Small Card 2 -->\n        <div class="p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 flex flex-col justify-between aspect-square">\n            <span class="text-gray-400">Inspiration</span>\n            <h3 class="text-xl font-medium text-white">Grid Mastery</h3>\n        </div>\n        <!-- Medium Card -->\n        <div class="md:col-span-2 p-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700 flex items-start flex-col">\n             <p class="text-gray-400 mb-2">Details</p>\n             <h3 class="text-3xl font-semibold text-white">Modular Design</h3>\n        </div>\n    </div>\n</div>`,
+                preview: `<div class="p-8 bg-gray-900 min-h-full font-inter">\n                    <h1 class="text-4xl font-bold text-white mb-8">Bento Grid Layout</h1>\n                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">\n                        <!-- Large Card -->\n                        <div class="md:col-span-2 p-6 bg-gray-800 rounded-xl shadow-lg border border-primary-teal/50 aspect-[16/9] flex items-end bg-[url('https://placehold.co/1200x675/1F2937/F3F4F6?text=Hero+Image')] bg-cover">\n                            <h2 class="text-2xl font-semibold text-primary-teal bg-gray-900/70 p-2 rounded">Project Showcase</h2>\n                        </div>\n                        <!-- Small Card 1 -->\n                        <div class="p-6 bg-gray-800 rounded-xl shadow-lg border border-primary-teal/50 flex flex-col justify-between aspect-square">\n                            <span class="text-gray-400">Clients Served</span>\n                            <p class="text-5xl font-extrabold text-white">45<span class="text-primary-teal">+</span></p>\n                        </div>\n                        <!-- Small Card 2 -->\n                        <div class="p-6 bg-gray-800 rounded-xl shadow-lg border border-primary-teal/50 flex flex-col justify-between aspect-square">\n                            <span class="text-gray-400">Design Focus</span>\n                            <h3 class="text-xl font-medium text-white">Grid Mastery</h3>\n                        </div>\n                        <!-- Medium Card -->\n                        <div class="md:col-span-2 p-6 bg-gray-800 rounded-xl shadow-lg border border-primary-teal/50 flex items-start flex-col">\n                             <p class="text-gray-400 mb-2">Key Principles</p>\n                             <h3 class="text-3xl font-semibold text-white">Modular Design & Scalability</h3>\n                        </div>\n                    </div>\n                </div>`
+            },
+            appleVision: {
+                code: `<!-- Pro Vision Dark Dashboard UI (Tech Style) -->\n<div class="p-8 bg-gray-900 min-h-full font-inter text-white">\n    <header class="flex justify-between items-center mb-10">\n        <h1 class="text-3xl font-bold text-primary-teal">Vision OS Dashboard</h1>\n        <span class="text-gray-500">User: Admin_001</span>\n    </header>\n    \n    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">\n        <!-- Metrics Card 1 -->\n        <div class="p-6 bg-gray-800 rounded-xl shadow-2xl border border-primary-teal/50 backdrop-blur-md">\n            <p class="text-sm text-gray-400">Total Users</p>\n            <p class="text-4xl font-extrabold mt-1">12,450</p>\n            <p class="text-green-400 text-sm mt-2">+12.5% since last week</p>\n        </div>\n        <!-- Metrics Card 2 -->\n        <div class="p-6 bg-gray-800 rounded-xl shadow-2xl border border-primary-teal/50 backdrop-blur-md">\n            <p class="text-sm text-gray-400">Bandwidth Usage</p>\n            <p class="text-4xl font-extrabold mt-1">4.5 TB</p>\n            <p class="text-red-400 text-sm mt-2">-0.8% since last month</p>\n        </div>\n        <!-- Status Card -->\n        <div class="p-6 bg-gray-800 rounded-xl shadow-2xl border border-primary-teal/50 backdrop-blur-md">\n            <p class="text-sm text-gray-400">System Status</p>\n            <p class="text-2xl font-semibold mt-2 text-green-400">Operational</p>\n            <p class="text-xs text-gray-500 mt-2">All services online.</p>\n        </div>\n    </div>\n</div>`,
+                preview: `<div class="p-8 bg-gray-900 min-h-full font-inter text-white">\n                    <header class="flex justify-between items-center mb-10">\n                        <h1 class="text-3xl font-bold text-primary-teal">Vision OS Dashboard</h1>\n                        <span class="text-gray-500 px-4 py-1 border border-primary-teal rounded-full text-xs">User: Admin_001</span>\n                    </header>\n                    \n                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">\n                        <!-- Metrics Card 1 -->\n                        <div class="p-6 bg-gray-800/80 rounded-xl shadow-2xl border border-primary-teal/50 backdrop-blur-lg">\n                            <p class="text-sm text-gray-400">Total Users</p>\n                            <p class="text-4xl font-extrabold mt-1">12,450</p>\n                            <p class="text-green-400 text-sm mt-2">▲ +12.5% since last week</p>\n                        </div>\n                        <!-- Metrics Card 2 -->\n                        <div class="p-6 bg-gray-800/80 rounded-xl shadow-2xl border border-primary-teal/50 backdrop-blur-lg">\n                            <p class="text-sm text-gray-400">Bandwidth Usage</p>\n                            <p class="text-4xl font-extrabold mt-1">4.5 TB</p>\n                            <p class="text-red-400 text-sm mt-2">▼ -0.8% since last month</p>\n                        </div>\n                        <!-- Status Card -->\n                        <div class="p-6 bg-gray-800/80 rounded-xl shadow-2xl border border-primary-teal/50 backdrop-blur-lg">\n                            <p class="text-sm text-gray-400">System Status</p>\n                            <p class="text-2xl font-semibold mt-2 text-green-400 flex items-center"><span class="w-3 h-3 bg-green-500 rounded-full mr-2 animate-pulse"></span>Operational</p>\n                            <p class="text-xs text-gray-500 mt-2">All services online and fully monitored.</p>\n                        </div>\n                    </div>\n                </div>`
+            },
+            saasDashboard: {
+                 code: `<!-- SaaS Dashboard (Clean & Professional) -->\n<div class="p-8 bg-gray-50 min-h-full font-inter">\n    <h1 class="text-3xl font-bold text-gray-900 mb-8">Analytics Overview</h1>\n    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">\n        <!-- Metric Card -->\n        <div class="bg-white p-5 rounded-xl shadow-md border border-gray-200">\n            <p class="text-sm text-gray-500">Revenue</p>\n            <p class="text-3xl font-bold text-primary-teal mt-1">$45,231</p>\n            <p class="text-xs text-gray-400 mt-2">Target: $50,000</p>\n        </div>\n        <!-- Metric Card -->\n        <div class="bg-white p-5 rounded-xl shadow-md border border-gray-200">\n            <p class="text-sm text-gray-500">New Signups</p>\n            <p class="text-3xl font-bold text-gray-800 mt-1">1,200</p>\n            <p class="text-xs text-gray-400 mt-2">Last 7 days</p>\n        </div>\n        <!-- Main Chart Area -->\n        <div class="md:col-span-4 p-8 bg-white rounded-xl shadow-xl border border-gray-200">\n            <h2 class="text-xl font-semibold mb-4">Monthly Performance</h2>\n            <div class="h-64 bg-gray-100 flex items-center justify-center text-gray-400">Chart Visualization Placeholder</div>\n        </div>\n    </div>\n</div>`,
+                 preview: `<div class="p-8 bg-gray-50 min-h-full font-inter">\n                    <h1 class="text-3xl font-bold text-gray-900 mb-8">Analytics Overview</h1>\n                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">\n                        <!-- Metric Card -->\n                        <div class="bg-white p-5 rounded-xl shadow-xl border border-primary-teal/20 transform hover:scale-[1.02] transition duration-300">\n                            <p class="text-sm text-gray-500">Revenue</p>\n                            <p class="text-3xl font-bold text-primary-teal mt-1 flex items-center">$45,231</p>\n                            <p class="text-xs text-gray-400 mt-2">Target: $50,000</p>\n                        </div>\n                        <!-- Metric Card -->\n                        <div class="bg-white p-5 rounded-xl shadow-xl border border-primary-teal/20 transform hover:scale-[1.02] transition duration-300">\n                            <p class="text-sm text-gray-500">New Signups</p>\n                            <p class="text-3xl font-bold text-gray-800 mt-1">1,200</p>\n                            <p class="text-xs text-gray-400 mt-2">Last 7 days</p>\n                        </div>\n                         <!-- Metric Card -->\n                        <div class="bg-white p-5 rounded-xl shadow-xl border border-primary-teal/20 transform hover:scale-[1.02] transition duration-300">\n                            <p class="text-sm text-gray-500">Active Users</p>\n                            <p class="text-3xl font-bold text-gray-800 mt-1">8,900</p>\n                            <p class="text-xs text-gray-400 mt-2">Avg. 15 min/day</p>\n                        </div>\n                         <!-- Metric Card -->\n                        <div class="bg-white p-5 rounded-xl shadow-xl border border-primary-teal/20 transform hover:scale-[1.02] transition duration-300">\n                            <p class="text-sm text-gray-500">Churn Rate</p>\n                            <p class="text-3xl font-bold text-red-500 mt-1">2.1<span class='text-xl'>%</span></p>\n                            <p class="text-xs text-gray-400 mt-2">Needs Improvement</p>\n                        </div>\n                        <!-- Main Chart Area -->\n                        <div class="md:col-span-4 p-8 bg-white rounded-xl shadow-2xl border border-gray-200">\n                            <h2 class="text-xl font-semibold mb-4">Monthly Performance</h2>\n                            <div class="h-64 bg-gray-100 flex items-center justify-center text-gray-400">Chart Visualization Placeholder</div>\n                        </div>\n                    </div>\n                </div>`
+            },
+            portfolioPersonal: {
+                code: `<!-- Personal Portfolio (Minimalist Dark/Light) -->\n<div class="min-h-full bg-white dark:bg-gray-900 transition duration-500 p-10 font-inter">\n    <header class="text-center mb-12">\n        <h1 class="text-5xl font-extrabold text-gray-900 dark:text-white">Jira Konthong</h1>\n        <p class="text-xl text-primary-teal mt-2">Full Stack Designer & Developer</p>\n    </header>\n    \n    <div class="max-w-4xl mx-auto space-y-12">\n        <!-- About Section -->\n        <section>\n            <h2 class="text-2xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4 text-gray-900 dark:text-white">About Me</h2>\n            <p class="text-gray-700 dark:text-gray-300">I specialize in creating beautiful, functional, and user-friendly digital experiences using modern frameworks like Tailwind CSS, React, and Angular. My passion lies in bridging the gap between design and code.</p>\n        </section>\n        \n        <!-- Project Grid -->\n        <section>\n            <h2 class="text-2xl font-bold border-b border-gray-200 dark:border-gray-700 pb-2 mb-4 text-gray-900 dark:text-white">Selected Work</h2>\n            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">\n                <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">\n                    <h3 class="text-xl font-semibold text-primary-teal">Project Alpha</h3>\n                    <p class="text-gray-500 dark:text-gray-400">SaaS Platform redesign, focusing on speed and accessibility.</p>\n                </div>\n                <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition duration-300">\n                    <h3 class="text-xl font-semibold text-primary-teal">E-commerce Theme</h3>\n                    <p class="text-gray-500 dark:text-gray-400">Modern, minimalist e-commerce template for luxury goods.</p>\n                </div>\n            </div>\n        </section>\n    </div>\n</div>`,
+                preview: `<div class="min-h-full bg-white dark:bg-gray-900 transition duration-500 p-10 font-inter">\n                    <header class="text-center mb-12">\n                        <h1 class="text-5xl font-extrabold text-gray-900 dark:text-white">Jira Konthong</h1>\n                        <p class="text-xl text-primary-teal mt-2">Full Stack Designer & Developer</p>\n                    </header>\n                    \n                    <div class="max-w-4xl mx-auto space-y-12">\n                        <!-- About Section -->\n                        <section>\n                            <h2 class="text-2xl font-bold border-b-2 border-primary-teal pb-2 mb-4 text-gray-900 dark:text-white">เกี่ยวกับฉัน (About Me)</h2>\n                            <p class="text-gray-700 dark:text-gray-300">ฉันมีความเชี่ยวชาญในการสร้างประสบการณ์ดิจิทัลที่สวยงาม ใช้งานได้จริง และเป็นมิตรต่อผู้ใช้ โดยใช้เฟรมเวิร์กสมัยใหม่ เช่น Tailwind CSS, React, และ Angular</p>\n                        </section>\n                        \n                        <!-- Project Grid -->\n                        <section>\n                            <h2 class="text-2xl font-bold border-b-2 border-primary-teal pb-2 mb-4 text-gray-900 dark:text-white">ผลงานที่เลือก (Selected Work)</h2>\n                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">\n                                <div class="p-6 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 hover:border-primary-teal transition duration-300">\n                                    <h3 class="text-xl font-semibold text-primary-teal">Project Alpha</h3>\n                                    <p class="text-gray-500 dark:text-gray-400">การออกแบบแพลตฟอร์ม SaaS ใหม่ เน้นความเร็วและการเข้าถึง</p>\n                                </div>\n                                <div class="p-6 bg-gray-50 dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 hover:border-primary-teal transition duration-300">\n                                    <h3 class="text-xl font-semibold text-primary-teal">E-commerce Theme</h3>\n                                    <p class="text-gray-500 dark:text-gray-400">เทมเพลตอีคอมเมิร์ซที่ทันสมัยและมินิมอลสำหรับสินค้าหรูหรา</p>\n                                </div>\n                            </div>\n                        </section>\n                    </div>\n                </div>`
+            },
+            weddingInvite: {
+                code: `<!-- Wedding Invitation (Elegant & Minimal) -->\n<div class="min-h-full flex items-center justify-center bg-gray-50 p-10 font-sarabun">\n    <div class="max-w-md w-full p-8 bg-white border border-gray-300 rounded-xl shadow-2xl text-center">\n        <p class="text-lg font-light text-gray-600 mb-2">Save the Date</p>\n        <h1 class="text-6xl font-serif text-pink-700 tracking-wider mb-6" style="font-family: 'Montserrat', sans-serif;">Ploi & Poom</h1>\n        <p class="text-gray-700 text-base mb-8">\n            ด้วยความยินดีอย่างยิ่ง ขอเรียนเชิญท่านร่วมเป็นเกียรติในพิธีฉลองมงคลสมรส\n        </p>\n        <div class="space-y-2 mb-10">\n            <p class="text-gray-800 font-semibold">วันเสาร์ที่ 10 กุมภาพันธ์ พ.ศ. 2568</p>\n            <p class="text-gray-600">เวลา 18:00 น. | ณ โรงแรม Grande Hyatt Erawan</p>\n        </div>\n        <a href="#" class="inline-block px-8 py-3 bg-pink-600 text-white font-medium rounded-full shadow-lg hover:bg-pink-700 transition duration-300">\n            ตอบรับคำเชิญ (RSVP)\n        </a>\n    </div>\n</div>`,
+                preview: `<div class="min-h-full flex items-center justify-center bg-gray-50 p-10 font-sarabun">\n                    <div class="max-w-md w-full p-8 bg-white border border-gray-300 rounded-xl shadow-2xl text-center">\n                        <p class="text-lg font-light text-gray-600 mb-2">Save the Date</p>\n                        <h1 class="text-6xl font-serif text-pink-700 tracking-wider mb-6" style="font-family: 'Montserrat', sans-serif;">Ploi & Poom</h1>\n                        <p class="text-gray-700 text-base mb-8">\n                            ด้วยความยินดีอย่างยิ่ง ขอเรียนเชิญท่านร่วมเป็นเกียรติในพิธีฉลองมงคลสมรส\n                        </p>\n                        <div class="space-y-2 mb-10">\n                            <p class="text-gray-800 font-semibold">วันเสาร์ที่ 10 กุมภาพันธ์ พ.ศ. 2568</p>\n                            <p class="text-gray-600">เวลา 18:00 น. | ณ โรงแรม Grande Hyatt Erawan</p>\n                        </div>\n                        <a href="#" class="inline-block px-8 py-3 bg-pink-600 text-white font-medium rounded-full shadow-lg hover:bg-pink-700 transition duration-300">\n                            ตอบรับคำเชิญ (RSVP)\n                        </a>\n                        <p class="text-xs text-gray-400 mt-6">แผนที่และรายละเอียดงานจะตามมาภายหลัง</p>\n                    </div>\n                </div>`
+            },
+            // The existing marketplace data
              marketplace: {
                 code: `<!-- E-Marketplace Hero -->\n<div class="p-8 bg-white min-h-full">\n    <header class="text-center mb-12">\n        <p class="text-sm uppercase tracking-widest text-gray-500">Curated Goods</p>\n        <h1 class="text-5xl font-extrabold text-gray-900 mt-2">The Minimalist Collection</h1>\n        <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">สินค้าคุณภาพเยี่ยมที่คัดสรรมาอย่างพิถีพิถัน</p>\n    </header>\n    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">\n        <!-- Items would go here -->\n        <div class="bg-gray-50 border border-gray-100 p-4 rounded-lg text-center">\n             <div class="h-40 bg-gray-200 rounded mb-4"></div>\n             <h3 class="font-bold">Minimal Lamp</h3>\n             <p class="text-teal-600">฿4,500</p>\n        </div>
     </div>\n</div>`,
@@ -1124,8 +1144,15 @@
         }
 
 
-        // Copy
+        // Copy Code Functionality
         copyButton.addEventListener('click', () => {
+            // Check if the button is disabled (which happens in preview mode)
+            if (copyButton.classList.contains('copy-disabled')) {
+                // If the user clicks the disabled button, they should be informed.
+                showModal('คัดลอกไม่ได้', 'กรุณาสลับไปที่แท็บ "โค้ด" ก่อนเพื่อคัดลอกเนื้อหา', [{text: 'ตกลง', type: 'primary'}]);
+                return;
+            }
+
             const text = codeContent.textContent;
             const textarea = document.createElement('textarea');
             textarea.value = text;
@@ -1134,6 +1161,7 @@
             document.execCommand('copy');
             document.body.removeChild(textarea);
 
+            // Visual feedback for successful copy
             copyButton.classList.add('active');
             const originalHtml = copyButton.innerHTML;
             copyButton.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
@@ -1238,9 +1266,56 @@
         sidebarToggle.addEventListener('click', toggleSidebar);
         // === End Sidebar Collapsing Logic ===
 
+        // View Switching Logic
+        function switchView(viewName) {
+            if (viewName === 'code') {
+                tabCode.classList.add('active');
+                tabPreview.classList.remove('active');
+                
+                viewCode.classList.remove('hidden');
+                viewPreview.classList.add('hidden');
+                
+                // Change header and code area background to dark for code view
+                outputPanelHeader.classList.remove('bg-gray-100'); 
+                outputPanelHeader.classList.add('bg-white'); // Keep header white for contrast
+                viewCode.closest('.flex-1').classList.remove('bg-gray-100');
+                viewCode.closest('.flex-1').classList.add('bg-gray-900');
+                
+                // Enable copy button
+                copyButton.classList.remove('copy-disabled');
+            } else {
+                tabPreview.classList.add('active');
+                tabCode.classList.remove('active');
+
+                viewPreview.classList.remove('hidden');
+                viewCode.classList.add('hidden');
+                
+                // Change header and code area background to light for preview
+                outputPanelHeader.classList.remove('bg-white');
+                outputPanelHeader.classList.add('bg-white'); 
+                viewCode.closest('.flex-1').classList.remove('bg-gray-900');
+                viewCode.closest('.flex-1').classList.add('bg-gray-100');
+                
+                // Disable copy button
+                copyButton.classList.add('copy-disabled');
+            }
+        }
 
         // Init Listeners
         window.addEventListener('DOMContentLoaded', function() {
+            // === NEW: Add listeners for tab buttons ===
+            tabCode.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchView('code');
+            });
+
+            tabPreview.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchView('preview');
+            });
+            // === END NEW LISTENERS ===
+
+
             // Initialize Menus
             toggleMenu('project-history-button', 'project-history-submenu-inline', 'project-history-submenu-flyout');
             toggleMenu('ai-settings-button', 'ai-settings-submenu-inline', 'ai-settings-submenu-flyout');
@@ -1259,6 +1334,23 @@
                 });
             });
 
+            // Add listeners for project items (required after projectData update)
+            document.querySelectorAll('.project-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Close the specific group this item belongs to (if it's a flyout) or all menus
+                    closeAllSubMenus();
+
+                    const pid = item.getAttribute('data-project');
+                    if (projectData[pid]) {
+                        codeContent.textContent = projectData[pid].code;
+                        viewPreview.innerHTML = projectData[pid].preview;
+                        switchView('preview'); // Default to preview when loading new project
+                    }
+                });
+            });
 
             // Set initial state (Expanded)
             sidebar.classList.remove('w-[80px]', 'collapsed');
@@ -1268,15 +1360,15 @@
             outputPanel.classList.remove('flex-grow', 'output-flex-ratio');
             outputPanel.classList.add('w-[48%]'); 
 
-            // Load initial project
+            // Load initial project (using appleProduct as default)
             codeContent.textContent = projectData.appleProduct.code;
             viewPreview.innerHTML = projectData.appleProduct.preview;
-            switchView('preview'); 
+            switchView('preview'); // Initialize the view state to 'preview'
             
             // Ensure arrow is in the correct initial state (pointing left, not rotated)
             sidebarToggle.classList.remove('rotate-180');
         });
-
+        
     </script>
 </body>
 </html>

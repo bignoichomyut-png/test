@@ -13,6 +13,25 @@
     <!-- โหลด Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Prompt', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        gemini: {
+                            primary: '#37B2B5',
+                            light: '#53D4D6',
+                            dark: '#2A9B9E'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
         /* ตั้งค่าฟอนต์หลัก */
         body {
@@ -21,10 +40,6 @@
             overflow: hidden; /* ป้องกัน scroll ซ้อน */
         }
         
-        .font-inter {
-            font-family: 'Inter', sans-serif;
-        }
-
         /* กำหนดสีหลักสำหรับ Tailwind Custom Colors */
         .text-primary-teal { color: #37B2B5; }
         .bg-primary-teal { background-color: #37B2B5; }
@@ -44,7 +59,7 @@
         .custom-scroll::-webkit-scrollbar-track {
             background-color: transparent;
         }
-
+        
         /* สไตล์ไอคอนเมนู */
         .menu-item {
             display: flex;
@@ -97,45 +112,32 @@
             box-shadow: 0 0 8px rgba(55, 178, 181, 0.5),
                         0 0 12px rgba(55, 178, 181, 0.3);
         }
-
-        /* --- Neon Button Styles --- */
-        @keyframes spin-border {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        
+        /* NEW: Style for disabled copy button in preview mode */
+        .copy-disabled {
+            opacity: 0.4;
+            cursor: default;
+            pointer-events: none;
+            box-shadow: none !important;
+            transform: none !important;
         }
+
+        /* Neon Button Styles (Simplified for now) */
+        @keyframes spin-border { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .neon-btn {
             position: relative;
             overflow: hidden;
-            border-radius: 9999px; /* rounded-full */
-            padding: 2px; /* Border thickness */
-            background-color: transparent; /* No bg initially */
+            border-radius: 9999px; 
+            padding: 2px;
+            background-color: transparent;
             transition: transform 0.1s;
         }
-
-        .neon-btn::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(transparent, transparent, transparent, #37B2B5);
-            animation: spin-border 2s linear infinite;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 0;
+        .neon-btn.active .neon-content {
+            color: #37B2B5;
+            font-weight: 600;
+            background-color: #f0fdfd;
         }
-
-        .neon-btn:hover::before {
-            opacity: 1;
-        }
-
-        .neon-btn.active::before {
-            opacity: 1;
-            background: conic-gradient(#37B2B5, #2A9B9E, #37B2B5);
-        }
-        
         .neon-content {
             position: relative;
             z-index: 1;
@@ -153,32 +155,20 @@
             transition: all 0.2s;
         }
 
-        .neon-btn.active .neon-content {
-            color: #37B2B5;
-            font-weight: 600;
-            background-color: #f0fdfd;
-        }
-        
-        .neon-btn:hover .neon-content {
-            color: #37B2B5;
+        /* User Bubble Gradient */
+        .user-bubble-gradient {
+             background: linear-gradient(135deg, #37B2B5 0%, #258f91 100%);
         }
 
-        /* Input Styles */
-        .tech-input:focus {
-            outline: none;
-            border-color: #37B2B5; 
-            box-shadow: 0 0 0 3px rgba(55, 178, 181, 0.5); 
-        }
-
+        /* Textarea and Send Button adjustments */
         .input-container {
             position: relative;
             width: 100%;
         }
-
         .input-container textarea {
             padding-right: 4rem; 
+            transition: all 0.15s;
         }
-
         .send-button-inside {
             position: absolute;
             right: 0.75rem; 
@@ -186,149 +176,222 @@
             transform: translateY(-50%);
             height: 1.75rem; 
             width: 1.75rem; 
-            transition: all 0.2s ease-in-out;
         }
         
-        .send-button-inside:active {
-            box-shadow: 0 0 10px rgba(83, 212, 214, 0.9),
-                        0 0 20px rgba(55, 178, 181, 0.6);
-            transform: translateY(-50%) scale(0.95);
-        }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .hide-scroll::-webkit-scrollbar {
-            display: none;
+        /* Gemini Text/Icon Style */
+        .text-gemini-primary { color: #37B2B5; }
+
+        /* Custom Flex Ratio for Collapsed State (30% vs 50% split of remaining space) */
+        .chat-flex-ratio {
+            flex-grow: 3;
+            flex-shrink: 0;
+            flex-basis: 0;
         }
-        .hide-scroll {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+        .output-flex-ratio {
+            flex-grow: 5;
+            flex-shrink: 0;
+            flex-basis: 0;
+        }
+        
+        /* Layout specific widths and transitions */
+        .layout-panel {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Sidebar specific layout for expanded/collapsed states */
+        .sidebar-item-label {
+            transition: opacity 0.3s, max-width 0.3s;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .sidebar.collapsed .sidebar-item-label {
+            opacity: 0;
+            max-width: 0;
+            margin-left: 0 !important;
+        }
+        .sidebar:not(.collapsed) .sidebar-item-label {
+             opacity: 1;
+             max-width: 200px; /* arbitrary max width */
+        }
+        
+        /* Menu item alignment for collapsed state */
+        .sidebar.collapsed .menu-item {
+            justify-content: center;
+            padding: 0.75rem 0.5rem;
+        }
+        .sidebar:not(.collapsed) .menu-item {
+            justify-content: flex-start;
+            padding: 0.75rem 1rem;
+        }
+        /* Ensure arrow for AI Settings is always visible in the expanded state */
+        .sidebar:not(.collapsed) #ai-settings-button {
+            justify-content: space-between !important;
         }
     </style>
 </head>
 <body class="overflow-hidden h-screen w-screen flex items-center justify-center bg-[#f0f2f5]">
 
     <!-- Main Card Container -->
-    <div class="flex bg-white text-gray-800 w-full max-w-[95vw] h-[90vh] rounded-2xl shadow-2xl overflow-hidden relative">
+    <div class="flex bg-white text-gray-800 w-full h-full rounded-2xl shadow-2xl overflow-hidden relative">
 
-        <!-- Sidebar (Fixed 80px) -->
-        <div id="sidebar" class="flex-shrink-0 bg-white w-[80px] z-30 flex flex-col shadow-[2px_0_20px_rgba(0,0,0,0.02)]">
-            <!-- Header Icon -->
-            <div class="h-20 flex items-center justify-center">
-                <h1 class="text-3xl font-bold text-gray-800 tracking-tighter">AI</h1>
+        <!-- ========================================== -->
+        <!-- LAYOUT 1: TOOLSTRIP (20% or 80px)          -->
+        <!-- ========================================== -->
+        <!-- Start with 20% width and mark as NOT collapsed -->
+        <div id="sidebar" class="layout-panel w-[20%] min-w-[80px] flex-shrink-0 bg-white z-30 flex flex-col border-r border-gray-100 sidebar">
+            
+            <!-- Header Icon & Collapse Button -->
+            <div class="h-20 flex items-center justify-between px-2 border-b border-gray-100 flex-shrink-0">
+                <h1 id="sidebar-title" class="text-3xl font-bold text-gray-800 tracking-tighter w-full text-center md:text-left md:ml-4 overflow-hidden whitespace-nowrap">AI Studio</h1>
+                <button id="sidebar-toggle" onclick="toggleSidebar()" title="พับเมนู" class="p-2 ml-auto rounded-full hover:bg-gray-100 text-gray-500 transition-transform transform rotate-180 flex-shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
             </div>
             
-            <!-- Menu Items -->
-            <nav class="p-2 space-y-4 flex-1 overflow-y-auto hide-scroll">
+            <!-- Menu Items (6 Main Items) -->
+            <nav id="sidebar-nav" class="p-2 space-y-2 flex-1 overflow-y-auto custom-scroll">
+                
                 <!-- 1. New Code -->
                 <div class="menu-container relative">
                     <a href="#" title="สร้างโค้ดใหม่" class="menu-item" id="new-code-button">
                         <div class="icon-glow-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
                                 <rect x="10" y="8" width="28" height="32" rx="4" fill="#E0F7F7" stroke="#37B2B5" stroke-width="2" stroke-linejoin="round"/>
                                 <path d="M18 20c0 4 3 7 7 7s7-3 7-7" fill="none" stroke="#37B2B5" stroke-width="2" stroke-linecap="round"/>
-                                <circle cx="21" cy="18" r="1.5" fill="#37B2B5"/>
-                                <circle cx="29" cy="18" r="1.5" fill="#37B2B5"/>
                                 <path d="M18 35h12" stroke="#37B2B5" stroke-width="2" stroke-linecap="round"/>
                             </svg>
                         </div>
+                         <span class="sidebar-item-label ml-3 text-sm font-medium text-gray-700">สร้างโค้ดใหม่</span>
                     </a>
                 </div>
                 
-                <!-- 2. Project History (Updated) -->
+                <!-- 2. Project History -->
                 <div class="menu-container relative">
                     <a href="#" title="ประวัติโครงการ" class="menu-item" id="project-history-button">
                         <div class="icon-glow-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
                                 <path d="M10 40h28V15c0-2-1-4-3-4h-4v-4h-4v4h-4v-4h-4v4h-4c-2 0-3 2-3 4v25z" fill="#D3F3E6" stroke="#37B2B5" stroke-width="2" stroke-linejoin="round"/>
                                 <rect x="15" y="24" width="4" height="16" fill="#37B2B5"/>
                                 <rect x="29" y="24" width="4" height="16" fill="#37B2B5"/>
                             </svg>
                         </div>
+                        <span class="sidebar-item-label ml-3 text-sm font-medium text-gray-700">ประวัติโครงการ</span>
                     </a>
-                    <!-- Submenu: Apple Style Added -->
-                    <div id="project-history-submenu" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-72 space-y-1 hidden">
-                        <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">Apple Style (ใหม่)</div>
+                    <!-- Submenu (Flyout) -->
+                    <div id="project-history-submenu" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-72 space-y-1 hidden border border-gray-100">
+                        <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">โครงการ Apple Style</div>
                         
                         <!-- 1. Titanium Series -->
                         <a href="#" data-project="appleProduct" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-3 text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v8"></path><path d="M8 12h8"></path></svg>
-                            <span class="text-sm font-medium">Titanium Launch</span>
+                            <svg class="w-4 h-4 mr-3 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
+                            <span class="text-sm">Titanium Series (Product)</span>
                         </a>
-
                         <!-- 2. Bento Grid -->
                         <a href="#" data-project="appleGrid" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-3 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-                            <span class="text-sm font-medium">Bento Grid Layout</span>
+                            <svg class="w-4 h-4 mr-3 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect></svg>
+                            <span class="text-sm">Bento Grid Layout</span>
                         </a>
-
-                        <!-- 3. Vision Dark -->
+                        <!-- 3. Pro Vision (Dark Mode) -->
                         <a href="#" data-project="appleVision" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-3 text-black" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                            <span class="text-sm font-medium">Vision Pro (Dark)</span>
+                            <svg class="w-4 h-4 mr-3 text-black" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                            <span class="text-sm">Pro Vision (Dark Mode)</span>
                         </a>
 
                         <div class="border-t border-gray-100 my-1"></div>
                         <div class="text-xs font-semibold text-gray-400 pb-1 px-2 uppercase tracking-wider">อื่นๆ</div>
                         
+                         <!-- 4. E-Marketplace -->
                          <a href="#" data-project="marketplace" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-3 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"></path></svg>
+                            <svg class="w-4 h-4 mr-3 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"></path></svg>
                             <span class="text-sm text-gray-500">E-Marketplace</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- 3. AI Settings (Updated with 5 items) -->
-                <div class="menu-container relative">
+                <!-- 3. AI Settings - MODIFIED FOR EXPANDABLE INLINE/FLYOUT -->
+                <div class="menu-container relative" id="ai-settings-group">
+                    <!-- Main Button -->
                     <a href="#" title="การตั้งค่า AI" class="menu-item" id="ai-settings-button">
-                        <div class="icon-glow-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
-                                <circle cx="24" cy="24" r="14" fill="#EBF4FF" stroke="#5d9ee7" stroke-width="2"/>
-                                <circle cx="24" cy="24" r="7" fill="#5d9ee7"/>
-                                <path d="M24 4V10M38 12L34 16M44 24H38M38 36L34 32M24 44V38M10 36L14 32M4 24H10M10 12L14 16" stroke="#5d9ee7" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
+                        <div class="flex items-center w-full">
+                            <div class="icon-glow-wrapper flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
+                                    <circle cx="24" cy="24" r="14" fill="#EBF4FF" stroke="#5d9ee7" stroke-width="2"/>
+                                    <circle cx="24" cy="24" r="7" fill="#5d9ee7"/>
+                                    <path d="M24 4V10M38 12L34 16M44 24H38M38 36L34 32M24 44V38M10 36L14 32M4 24H10M10 12L14 16" stroke="#5d9ee7" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <span class="sidebar-item-label ml-3 text-sm font-medium text-gray-700 flex-1">การตั้งค่า AI</span>
+                            <!-- Arrow icon for rotation (only visible when sidebar is expanded) -->
+                            <svg id="ai-settings-arrow" class="w-4 h-4 text-gray-400 transition-transform rotate-0 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </div>
                     </a>
-                    <!-- Submenu with 5 interactive items -->
-                    <div id="ai-settings-submenu" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-56 space-y-1 hidden">
-                        <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">เครื่องมือปรับแต่ง</div>
+                    
+                    <!-- Inline Submenu (Collapsible content for EXPANDED state) -->
+                    <!-- ปรับ class เพื่อจัดระยะห่างของเมนูย่อยให้เหมาะสม -->
+                    <div id="ai-settings-submenu-inline" class="space-y-1 overflow-hidden transition-all duration-300" style="max-height: 0px;">
+                        <div class="text-xs font-semibold text-gray-500 pt-1 pb-1 uppercase tracking-wider ml-9">เครื่องมือปรับแต่ง</div>
                         
-                        <!-- 1. Color -->
-                        <a href="#" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150" data-tool="color">
-                            <div class="w-5 h-5 mr-3 bg-pink-100 rounded-full flex items-center justify-center text-pink-500">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
-                            </div>
-                            <span class="text-sm">สี (Color)</span>
+                        <!-- 1. สี (Color) - เปลี่ยนเป็น Rainbow emoji -->
+                        <a href="#" data-tool="สี" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                            <span class="text-sm">🌈 สี (Color)</span>
+                        </a>
+                        
+                        <!-- 2. รูปภาพ (Image) - เปลี่ยนเป็น Camera emoji -->
+                        <a href="#" data-tool="รูปภาพ" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                            <span class="text-sm">📸 รูปภาพ (Image)</span>
                         </a>
 
-                        <!-- 2. Image -->
-                        <a href="#" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150" data-tool="image">
-                            <div class="w-5 h-5 mr-3 bg-blue-100 rounded-full flex items-center justify-center text-blue-500">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            </div>
-                            <span class="text-sm">รูปภาพ (Image)</span>
+                        <!-- 3. วิดีโอ (Video) - เปลี่ยนเป็น Clapboard emoji -->
+                        <a href="#" data-tool="วิดีโอ" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                            <span class="text-sm">🎬 วิดีโอ (Video)</span>
+                        </a>
+                        
+                        <!-- 4. ลิ้งค์ URL (Links) - เปลี่ยนเป็น Sparkle emoji -->
+                        <a href="#" data-tool="ลิ้งค์" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                            <span class="text-sm">✨ ลิ้งค์ URL (Links)</span>
                         </a>
 
-                        <!-- 3. Video -->
-                        <a href="#" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150" data-tool="video">
-                             <div class="w-5 h-5 mr-3 bg-red-100 rounded-full flex items-center justify-center text-red-500">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            </div>
-                            <span class="text-sm">ลิงค์วิดีโอ (Video)</span>
+                        <!-- 5. ฟอนต์ (Font) - เปลี่ยนเป็น Fountain Pen emoji -->
+                        <a href="#" data-tool="ฟอนต์" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                            <span class="text-sm">🖋️ ฟอนต์ (Font)</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Flyout Submenu (Absolute positioned for COLLAPSED state) -->
+                    <div id="ai-settings-submenu-flyout" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-56 space-y-1 hidden border border-gray-100">
+                         <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">เครื่องมือปรับแต่ง</div>
+                        
+                        <!-- 1. สี (Color) - อัพเดท SVG ให้มินิมอลขึ้น -->
+                        <a href="#" data-tool="สี" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg class="w-4 h-4 mr-3 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 7.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1-5 0zM12 21l8-8-4-4-4 8z"/></svg>
+                            <span class="text-sm">🎨 สี (Color)</span>
+                        </a>
+                        
+                        <!-- 2. รูปภาพ (Image) - คง SVG มินิมอลเดิม -->
+                        <a href="#" data-tool="รูปภาพ" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg class="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span class="text-sm">🖼️ รูปภาพ (Image)</span>
                         </a>
 
-                        <!-- 4. Links -->
-                        <a href="#" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150" data-tool="link">
-                             <div class="w-5 h-5 mr-3 bg-green-100 rounded-full flex items-center justify-center text-green-500">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                            </div>
-                            <span class="text-sm">ลิ้งค์ URL (Links)</span>
+                        <!-- 3. วิดีโอ (Video) - คง SVG มินิมอลเดิม -->
+                        <a href="#" data-tool="วิดีโอ" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg class="w-4 h-4 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span class="text-sm">🎥 วิดีโอ (Video)</span>
+                        </a>
+                        
+                        <!-- 4. ลิ้งค์ URL (Links) - คง SVG มินิมอลเดิม -->
+                        <a href="#" data-tool="ลิ้งค์" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg class="w-4 h-4 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                            <span class="text-sm">🔗 ลิ้งค์ URL (Links)</span>
                         </a>
 
-                        <!-- 5. Font -->
-                        <a href="#" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150" data-tool="font">
-                             <div class="w-5 h-5 mr-3 bg-purple-100 rounded-full flex items-center justify-center text-purple-500">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            </div>
-                            <span class="text-sm">ฟอนต์ (Font)</span>
+                        <!-- 5. ฟอนต์ (Font) - คง SVG มินิมอลเดิม -->
+                        <a href="#" data-tool="ฟอนต์" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <svg class="w-4 h-4 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            <span class="text-sm">🔠 ฟอนต์ (Font)</span>
                         </a>
                     </div>
                 </div>
@@ -337,14 +400,15 @@
                 <div class="menu-container relative">
                     <a href="#" title="เทมเพลตดีไซน์" class="menu-item" id="design-templates-button">
                         <div class="icon-glow-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
                                 <circle cx="24" cy="24" r="18" fill="#D3F3E6" stroke="#37B2B5" stroke-width="2"/>
                                 <path d="M24 16c2 0 4 1 4 3 0 2-1 3-2 4s-2 2-2 4M24 33h.01" stroke="#37B2B5" stroke-width="3" stroke-linecap="round"/>
                             </svg>
                         </div>
+                        <span class="sidebar-item-label ml-3 text-sm font-medium text-gray-700">เทมเพลตดีไซน์</span>
                     </a>
                     <!-- Submenu -->
-                    <div id="design-templates-submenu" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-64 space-y-1 hidden">
+                    <div id="design-templates-submenu" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-64 space-y-1 hidden border border-gray-100">
                         <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">ตัวอย่างเทมเพลต</div>
                         <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
                             <span class="text-sm">E-commerce Product Page</span>
@@ -355,65 +419,90 @@
                     </div>
                 </div>
 
-                <!-- 5. User Manual -->
+                 <!-- 5. User Manual -->
                 <div class="menu-container relative">
                     <a href="#" title="คู่มือการใช้งาน" class="menu-item" id="user-manual-button">
                         <div class="icon-glow-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
                                 <path d="M24 4c-5 0-9 4-9 9 0 4 3 7 3 9v7h12v-7c0-2 3-5 3-9 0-5-4-9-9-9z" fill="#FDE0C4" stroke="#F7A823" stroke-width="2" stroke-linejoin="round"/>
                                 <rect x="20" y="32" width="8" height="6" fill="#FDE0C4" stroke="#F7A823" stroke-width="2" stroke-linejoin="round"/>
                             </svg>
                         </div>
+                        <span class="sidebar-item-label ml-3 text-sm font-medium text-gray-700">คู่มือการใช้งาน</span>
                     </a>
                     <!-- Submenu -->
-                    <div id="user-manual-submenu" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-48 space-y-1 hidden">
+                    <div id="user-manual-submenu" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-48 space-y-1 hidden border border-gray-100">
                         <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">คู่มือการใช้งาน</div>
                         <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
                             <span class="text-sm">คู่มือเริ่มต้นการใช้งาน</span>
                         </a>
                     </div>
                 </div>
+                
+                 <!-- 6. Account / Profile (NEW) -->
+                <div class="menu-container relative">
+                    <a href="#" title="บัญชีผู้ใช้" class="menu-item" id="profile-button">
+                        <div class="icon-glow-wrapper">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-gray-500">
+                                <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.03 18.03 0 0112 21.75c-2.88 0-5.43-1.025-7.468-2.65.111-.08.223-.159.336-.234z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <span class="sidebar-item-label ml-3 text-sm font-medium text-gray-700">บัญชีผู้ใช้</span>
+                    </a>
+                    <!-- Submenu -->
+                    <div id="profile-submenu" class="absolute left-[70px] bottom-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-56 space-y-1 hidden border border-gray-100">
+                        <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">เมนูบัญชี</div>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <span class="text-sm">แก้ไขข้อมูลส่วนตัว</span>
+                        </a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <span class="text-sm">จัดการแพ็กเกจ</span>
+                        </a>
+                        <div class="border-t border-gray-100 my-1"></div>
+                         <a href="#" title="ออกจากระบบ" class="logout-item flex items-center p-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition duration-150" id="logout-button-submenu">
+                            <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                            <span class="text-sm">ออกจากระบบ</span>
+                        </a>
+                    </div>
+                </div>
             </nav>
 
-            <!-- Logout -->
-            <div class="p-2">
-                <a href="#" title="ออกจากระบบ" class="menu-item" id="logout-button">
-                    <div class="icon-glow-wrapper">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-8 h-8">
-                            <path d="M24 42c-7 0-11-4-11-10s4-10 11-10 11 4 11 10-4 10-11 10z" fill="#FBE0C4" stroke="#F7A823" stroke-width="2"/>
-                            <path d="M34 26c-2 2-5 3-8 3s-6-1-8-3" fill="none" stroke="#F7A823" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M24 32c-3 0-5-2-5-5s2-5 5-5 5 2 5 5-2 5-5 5z" fill="#FDE0C4" stroke="#F7A823" stroke-width="2"/>
-                        </svg>
-                    </div>
-                </a>
-            </div>
+            <!-- Logout (Removed from footer) -->
+             <div class="p-2 flex-shrink-0 opacity-0 h-4"></div>
         </div>
         
-        <!-- Chat Panel -->
-        <div id="chat-panel" class="flex flex-col w-[350px] bg-white flex-shrink-0 relative z-20 shadow-[2px_0_20px_rgba(0,0,0,0.02)]">
-            <header class="p-4 h-20 flex flex-col justify-center">
+        <!-- ========================================== -->
+        <!-- LAYOUT 2: CHAT PANEL (30%)                 -->
+        <!-- ========================================== -->
+        <div id="chat-panel" class="layout-panel w-[30%] min-w-[300px] flex flex-col bg-white flex-shrink-0 relative z-20 border-r border-gray-100 shadow-[2px_0_20px_rgba(0,0,0,0.02)]">
+            <header class="p-4 h-20 flex flex-col justify-center flex-shrink-0 border-b border-gray-100">
                 <h2 class="text-lg font-semibold text-gray-800">ช่องสั่งงาน AI</h2>
                 <p class="text-sm text-gray-500">พิมพ์คำสั่งของคุณเพื่อสร้างโค้ด</p>
             </header>
 
-            <div class="flex-1 p-4 space-y-4 custom-scroll overflow-y-auto">
+            <div class="flex-1 p-4 space-y-4 custom-scroll overflow-y-auto min-h-0">
                 <div class="flex justify-start">
                     <div class="max-w-[85%] p-4 bg-light-teal text-[#1A7B7E] rounded-3xl rounded-tl-lg shadow-sm">
                         <p class="font-bold mb-1">AI Helper</p>
-                        <p class="text-sm">สวัสดีครับ! ระบบพร้อมใช้งานแล้ว ลองเลือกดูตัวอย่างเว็บไซต์สไตล์ Apple ใหม่ในเมนู "ประวัติโครงการ" ได้เลยครับ</p>
+                        <p class="text-sm">สวัสดีครับ! ผมพร้อมที่จะช่วยออกแบบเว็บไซต์ให้คุณแล้ว ต้องการเริ่มจากส่วนไหนดีครับ?</p>
+                    </div>
+                </div>
+                <div class="flex justify-end">
+                    <div class="max-w-[85%] p-4 bg-primary-teal text-white rounded-3xl rounded-br-lg shadow-md user-bubble-gradient">
+                        <p class="text-sm">ช่วยออกแบบหน้าแรกของ MarketPlace ที่เน้นสินค้าพรีเมียม สไตล์มินิมอลครับ</p>
                     </div>
                 </div>
                 <div class="flex justify-start">
-                     <div class="max-w-[85%] p-4 bg-light-teal text-[#1A7B7E] rounded-3xl rounded-tl-lg shadow-sm">
+                    <div class="max-w-[85%] p-4 bg-light-teal text-[#1A7B7E] rounded-3xl rounded-tl-lg shadow-sm">
                         <p class="font-bold mb-1">AI Helper</p>
-                        <p class="text-sm">และผมได้เพิ่มเมนูใน "การตั้งค่า AI" ให้ครบ 5 รายการแล้ว สามารถกดเพื่อดูการทำงานได้ครับ</p>
+                        <p class="text-sm">รับทราบครับ! นี่คือโค้ดสำหรับหน้าแรก MarketPlace สไตล์มินิมอลครับ ลองดูผลลัพธ์ที่หน้าจอด้านขวาได้เลย</p>
                     </div>
                 </div>
             </div>
 
-            <footer class="p-4 bg-white">
+            <footer class="p-4 bg-white flex-shrink-0 border-t border-gray-100">
                 <div class="input-container">
-                    <textarea id="prompt-input" rows="2" class="w-full p-3 bg-gray-50 rounded-xl transition duration-150 resize-none shadow-inner tech-input text-sm focus:bg-white" placeholder="พิมพ์คำสั่ง..."></textarea>
+                    <textarea id="prompt-input" rows="2" class="w-full p-3 bg-gray-50 rounded-xl transition duration-150 resize-none shadow-inner text-sm focus:bg-white tech-input" placeholder="พิมพ์คำสั่ง..."></textarea>
                     <button id="send-button" class="send-button-inside flex items-center justify-center bg-gradient-to-r from-[#53D4D6] to-[#37B2B5] text-white font-semibold rounded-full shadow-lg hover:from-[#37B2B5] hover:to-[#2A9B9E]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path></svg>
                     </button>
@@ -421,23 +510,25 @@
             </footer>
         </div>
 
-        <!-- Output Panel -->
-        <div id="output-panel" class="flex flex-col flex-1 bg-white min-w-0">
-            <header class="p-4 bg-white flex items-center justify-between h-20">
+        <!-- ========================================== -->
+        <!-- LAYOUT 3: OUTPUT PANEL (50%)               -->
+        <!-- ========================================== -->
+        <div id="output-panel" class="layout-panel w-[50%] flex flex-col flex-1 bg-white min-w-0">
+            <header class="p-4 bg-white flex items-center justify-between h-20 flex-shrink-0 border-b border-gray-100">
                 <h2 class="text-lg font-semibold text-gray-800">แสดงผลลัพธ์</h2>
                 <div class="flex items-center space-x-4">
-                    <!-- Undo/Redo Buttons -->
+                    <!-- Undo/Redo Buttons (Adjusted for compactness) -->
                     <div class="flex space-x-2 mr-2">
-                        <button id="undo-button" title="ย้อนกลับ (Undo)" class="header-control-glow flex items-center justify-center p-2 text-sm font-medium rounded-full bg-gray-100 text-gray-600 transition duration-150">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+                        <button id="undo-button" title="ย้อนกลับ (Undo)" class="header-control-glow flex items-center justify-center p-1.5 text-sm font-medium rounded-full bg-gray-100 text-gray-600 transition duration-150">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
                         </button>
-                        <button id="redo-button" title="ทำซ้ำ (Redo)" class="header-control-glow flex items-center justify-center p-2 text-sm font-medium rounded-full bg-gray-100 text-gray-600 transition duration-150">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"></path></svg>
+                        <button id="redo-button" title="ทำซ้ำ (Redo)" class="header-control-glow flex items-center justify-center p-1.5 text-sm font-medium rounded-full bg-gray-100 text-gray-600 transition duration-150">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2M21 10l-6 6m6-6l-6-6"></path></svg>
                         </button>
                     </div>
 
-                    <button id="copy-button" title="คัดลอกโค้ด" class="header-control-glow flex items-center justify-center p-2 text-sm font-medium rounded-full bg-gray-100 text-gray-600 transition duration-150">
-                        <svg id="copy-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <button id="copy-button" title="คัดลอกโค้ด" class="header-control-glow flex items-center justify-center p-1.5 text-sm font-medium rounded-full bg-gray-100 text-gray-600 transition duration-150">
+                        <svg id="copy-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-2m-4-4l-4-4m0 0l-4 4m4-4v12"></path>
                         </svg>
                     </button>
@@ -453,7 +544,7 @@
                 </div>
             </header>
 
-            <div class="flex-1 p-6 flex flex-col overflow-hidden">
+            <div class="flex-1 p-6 flex flex-col overflow-hidden min-h-0">
                 <div id="content-frame" class="flex-1 rounded-2xl border border-gray-200 overflow-hidden relative shadow-sm flex flex-col">
                     
                     <!-- Code View -->
@@ -483,11 +574,16 @@
     <script>
         // DOM Elements
         const sidebar = document.getElementById('sidebar');
+        const sidebarTitle = document.getElementById('sidebar-title');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const chatPanel = document.getElementById('chat-panel');
+        const outputPanel = document.getElementById('output-panel');
+        
         const tabCode = document.getElementById('tab-code');
         const tabPreview = document.getElementById('tab-preview');
         const viewCode = document.getElementById('view-code');
         const viewPreview = document.getElementById('view-preview');
-        const outputPanel = document.getElementById('output-panel');
+        const outputPanelHeader = document.getElementById('output-panel');
         const copyButton = document.getElementById('copy-button');
         const codeContent = document.getElementById('code-content');
         
@@ -495,127 +591,217 @@
         const projectHistoryButton = document.getElementById('project-history-button');
         const projectHistorySubmenu = document.getElementById('project-history-submenu');
         const aiSettingsButton = document.getElementById('ai-settings-button');
-        const aiSettingsSubmenu = document.getElementById('ai-settings-submenu');
+        const aiSettingsArrow = document.getElementById('ai-settings-arrow');
+        const aiSettingsSubmenuInline = document.getElementById('ai-settings-submenu-inline');
+        const aiSettingsSubmenuFlyout = document.getElementById('ai-settings-submenu-flyout');
         const userManualButton = document.getElementById('user-manual-button'); 
         const userManualSubmenu = document.getElementById('user-manual-submenu'); 
         const designTemplatesButton = document.getElementById('design-templates-button');
         const designTemplatesSubmenu = document.getElementById('design-templates-submenu');
+        const profileButton = document.getElementById('profile-button');
+        const profileSubmenu = document.getElementById('profile-submenu');
         
-        // Modal & Buttons
+        // Modal
         const newCodeButton = document.getElementById('new-code-button');
-        const logoutButton = document.getElementById('logout-button');
+        const logoutButtonSubmenu = document.getElementById('logout-button-submenu');
         const modalOverlay = document.getElementById('custom-modal-overlay');
         const modalTitle = document.getElementById('modal-title');
         const modalMessage = document.getElementById('modal-message');
         const modalActions = document.getElementById('modal-actions');
+
+        // Buttons
         const undoButton = document.getElementById('undo-button');
         const redoButton = document.getElementById('redo-button');
 
-        // Project Data (Apple Style Mockups)
+        // Project Data (Updated with Apple-style websites)
         const projectData = {
             appleProduct: {
-                code: `<!-- Titanium Series (Product Page) -->\n<div class="font-inter bg-white min-h-full">\n    <!-- Navbar -->\n    <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/80 sticky top-0 z-50 border-b border-gray-100">\n        <div class="font-bold text-xl tracking-tight text-black">Titanium.</div>\n        <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">\n            <a href="#" class="hover:text-black transition">Overview</a>\n            <a href="#" class="hover:text-black transition">Specs</a>\n            <a href="#" class="hover:text-black transition">Compare</a>\n        </div>\n        <button class="bg-[#0071e3] text-white px-3 py-1 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>\n    </nav>\n\n    <!-- Hero -->\n    <div class="text-center pt-20 pb-24 px-4">\n        <p class="text-[#f56300] font-semibold text-sm mb-2 tracking-wide">New</p>\n        <h2 class="text-[#1d1d1f] text-6xl md:text-8xl font-semibold tracking-tighter mb-4">Titanium.</h2>\n        <p class="text-2xl md:text-3xl text-[#1d1d1f] font-medium mb-10">So strong. So light. So Pro.</p>\n        <div class="flex justify-center space-x-8 text-[#0066cc] text-xl font-medium mb-16">\n            <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-base">›</span></a>\n            <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-base">›</span></a>\n        </div>\n        <!-- Mockup -->\n        <div class="max-w-5xl mx-auto">\n             <div class="aspect-[16/9] bg-gradient-to-b from-gray-50 to-white rounded-3xl flex items-center justify-center shadow-sm border border-gray-100">\n                <span class="text-gray-300 font-bold text-5xl">Product Image Area</span>\n             </div>\n        </div>\n    </div>\n</div>`,
-                preview: `<div class="font-inter bg-white min-h-full text-[#1d1d1f]">
-                            <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/80 sticky top-0 z-50 border-b border-gray-100">
-                                <div class="font-bold text-xl tracking-tight">Titanium.</div>
-                                <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-500">
+                code: `<!-- Apple Style Product Page -->
+<div class="font-inter bg-white min-h-full">
+    <!-- Navbar -->
+    <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">
+        <div class="font-bold text-xl tracking-tight">Titanium.</div>
+        <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">
+            <a href="#" class="hover:text-black transition">Overview</a>
+            <a href="#" class="hover:text-black transition">Specs</a>
+            <a href="#" class="hover:text-black transition">Compare</a>
+        </div>
+        <button class="bg-[#0071e3] text-white px-3 py-1 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>
+    </nav>
+
+    <!-- Hero -->
+    <div class="text-center pt-16 pb-24 px-4">
+        <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>
+        <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>
+        <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">
+            <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">></span></a>
+            <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">></span></a>
+        </div>
+        <!-- Mockup Image -->
+        <div class="max-w-4xl mx-auto">
+             <div class="aspect-[16/9] bg-gray-100 rounded-3xl flex items-center justify-center shadow-sm">
+                <span class="text-gray-300 font-bold text-4xl">Product Image Mockup</span>
+             </div>
+        </div>
+    </div>
+</div>`,
+                preview: `<div class="font-inter bg-white min-h-full">
+                            <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">
+                                <div class="font-bold text-xl tracking-tight text-black">Titanium.</div>
+                                <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">
                                     <a href="#" class="hover:text-black transition">Overview</a>
                                     <a href="#" class="hover:text-black transition">Specs</a>
                                     <a href="#" class="hover:text-black transition">Compare</a>
                                 </div>
                                 <button class="bg-[#0071e3] text-white px-4 py-1.5 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>
                             </nav>
-                            <div class="text-center pt-20 pb-24 px-4">
-                                <p class="text-[#f56300] font-semibold text-sm mb-3 tracking-wide uppercase">New</p>
-                                <h2 class="text-6xl md:text-8xl font-semibold tracking-tighter mb-4">Titanium.</h2>
-                                <p class="text-2xl md:text-3xl font-medium mb-10 text-gray-800">So strong. So light. So Pro.</p>
-                                <div class="flex justify-center space-x-8 text-[#0066cc] text-xl font-medium mb-16">
-                                    <a href="#" class="hover:underline flex items-center group">Learn more <span class="ml-1 text-base group-hover:translate-x-0.5 transition">›</span></a>
-                                    <a href="#" class="hover:underline flex items-center group">Buy <span class="ml-1 text-base group-hover:translate-x-0.5 transition">›</span></a>
+                            <div class="text-center pt-16 pb-24 px-4">
+                                <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>
+                                <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>
+                                <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">
+                                    <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">›</span></a>
+                                    <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">›</span></a>
                                 </div>
-                                <div class="max-w-5xl mx-auto p-4">
-                                     <div class="aspect-[16/9] bg-gradient-to-tr from-[#f5f5f7] to-[#e8e8ed] rounded-[3rem] flex items-center justify-center shadow-inner relative overflow-hidden">
-                                        <div class="absolute inset-0 bg-white/40 skew-y-3 transform origin-bottom-left"></div>
-                                        <div class="z-10 text-gray-400 font-bold text-4xl tracking-widest uppercase">Titanium Frame</div>
+                                <div class="max-w-4xl mx-auto">
+                                     <div class="aspect-[16/9] bg-gradient-to-tr from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center shadow-inner">
+                                        <div class="w-1/2 h-1/2 bg-gray-300 rounded-xl flex items-center justify-center text-gray-500">Titanium Frame</div>
                                      </div>
                                 </div>
                             </div>
                         </div>`
             },
             appleGrid: {
-                code: `<!-- Apple Style Bento Grid -->\n<div class="font-inter bg-[#f5f5f7] min-h-full p-8 md:p-16">\n    <div class="max-w-6xl mx-auto">\n        <h2 class="text-4xl md:text-6xl font-bold text-[#1d1d1f] mb-12">Get to know.</h2>\n        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">\n            <!-- Big Card -->\n            <div class="md:col-span-2 bg-white rounded-3xl p-8 h-[400px] shadow-sm hover:scale-[1.01] transition duration-300 relative overflow-hidden">\n                <h3 class="text-3xl font-bold relative z-10">A17 Pro chip.<br>Game changing.</h3>\n                <div class="absolute bottom-0 right-0 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-50"></div>\n            </div>\n            <!-- Small Card 1 -->\n            <div class="bg-white rounded-3xl p-8 h-[400px] shadow-sm hover:scale-[1.01] transition duration-300 flex flex-col justify-center text-center">\n                 <h3 class="text-2xl font-bold mb-2">Camera.</h3>\n                 <p class="text-gray-500">Capture your reality.</p>\n            </div>\n        </div>\n    </div>\n</div>`,
+                code: `<!-- Apple Style Bento Grid -->
+<div class="font-inter bg-[#f5f5f7] min-h-full p-8 md:p-16">
+    <div class="max-w-6xl mx-auto">
+        <h2 class="text-4xl md:text-6xl font-bold text-[#1d1d1f] mb-12">Get to know.</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Large Card -->
+            <div class="md:col-span-2 bg-white rounded-3xl p-8 h-[400px] shadow-sm hover:scale-[1.02] transition duration-300 flex flex-col justify-between overflow-hidden relative">
+                <div class="z-10">
+                    <p class="text-sm font-semibold text-gray-500 uppercase mb-2">Connectivity</p>
+                    <h3 class="text-3xl font-bold text-black">Fastest ever.</h3>
+                </div>
+                <div class="absolute bottom-0 right-0 w-2/3 h-2/3 bg-blue-50 rounded-tl-full opacity-50"></div>
+            </div>
+            
+            <!-- Small Card 1 -->
+            <div class="bg-white rounded-3xl p-8 h-[400px] shadow-sm hover:scale-[1.02] transition duration-300 flex flex-col items-center justify-center text-center">
+                 <div class="w-20 h-20 bg-orange-100 rounded-full mb-6 flex items-center justify-center text-orange-500">
+                    <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg>
+                 </div>
+                 <h3 class="text-2xl font-bold text-black mb-2">Silent Mode</h3>
+                 <p class="text-gray-500">Focus on what matters.</p>
+            </div>
+            
+            <!-- Small Card 2 -->
+            <div class="bg-black rounded-3xl p-8 h-[400px] shadow-sm hover:scale-[1.02] transition duration-300 text-white flex flex-col justify-between">
+                 <h3 class="text-2xl font-bold">Night Mode.<br>Clearer than ever.</h3>
+                 <div class="w-full h-32 bg-gray-800 rounded-xl mt-4 opacity-80"></div>
+            </div>
+            
+            <!-- Medium Card -->
+             <div class="md:col-span-2 bg-white rounded-3xl p-8 h-[300px] shadow-sm hover:scale-[1.02] transition duration-300 flex items-center justify-between">
+                <div class="w-1/2">
+                    <h3 class="text-3xl font-bold text-black mb-4">Privacy.</h3>
+                    <p class="text-gray-500">That's iPhone.</p>
+                </div>
+                <div class="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center text-4xl">🔒</div>
+            </div>
+        </div>
+    </div>
+</div>`,
                 preview: `<div class="font-inter bg-[#f5f5f7] min-h-full p-8 md:p-16">
                             <div class="max-w-6xl mx-auto">
-                                <h2 class="text-5xl md:text-7xl font-bold text-[#1d1d1f] mb-12 tracking-tight">Get to know.</h2>
+                                <h2 class="text-4xl md:text-6xl font-bold text-[#1d1d1f] mb-12">Get to know.</h2>
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <!-- Large Card -->
-                                    <div class="md:col-span-2 bg-white rounded-[2.5rem] p-10 h-[450px] shadow-sm hover:shadow-lg hover:scale-[1.01] transition duration-500 ease-out flex flex-col justify-between overflow-hidden relative group cursor-pointer">
-                                        <div class="z-10 relative">
-                                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Performance</p>
-                                            <h3 class="text-5xl font-bold text-[#1d1d1f] leading-tight">A17 Pro chip. <br><span class="text-gray-400">Monster win for gaming.</span></h3>
+                                    <div class="md:col-span-2 bg-white rounded-[2rem] p-8 h-[400px] shadow-sm hover:shadow-md hover:scale-[1.01] transition duration-500 ease-out flex flex-col justify-between overflow-hidden relative group">
+                                        <div class="z-10">
+                                            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Performance</p>
+                                            <h3 class="text-4xl font-bold text-black">A17 Pro chip. <br><span class="text-gray-400">A monster win for gaming.</span></h3>
                                         </div>
-                                        <div class="absolute -bottom-20 -right-20 w-96 h-96 bg-gradient-to-br from-indigo-100 to-purple-200 rounded-full blur-[80px] opacity-70 group-hover:opacity-100 transition duration-700"></div>
-                                        <div class="w-2/3 h-1/3 bg-gray-50 rounded-2xl border border-gray-100 self-end mt-4 shadow-inner flex items-center justify-center text-gray-300 relative z-10">GPU Core</div>
+                                        <div class="absolute -bottom-10 -right-10 w-64 h-64 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full blur-3xl opacity-60 group-hover:opacity-80 transition"></div>
+                                        <div class="w-full h-32 bg-gray-50 rounded-xl mt-auto border border-gray-100 relative z-10 flex items-center justify-center text-gray-300">GPU Illustration</div>
                                     </div>
                                     
                                     <!-- Small Card 1 -->
-                                    <div class="bg-white rounded-[2.5rem] p-10 h-[450px] shadow-sm hover:shadow-lg hover:scale-[1.01] transition duration-500 ease-out flex flex-col items-center justify-center text-center cursor-pointer group">
-                                         <div class="w-28 h-28 bg-[#fff2e6] rounded-full mb-8 flex items-center justify-center text-[#ff6a00] group-hover:scale-110 transition duration-500">
-                                            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                    <div class="bg-white rounded-[2rem] p-8 h-[400px] shadow-sm hover:shadow-md hover:scale-[1.01] transition duration-500 ease-out flex flex-col items-center justify-center text-center">
+                                         <div class="w-24 h-24 bg-orange-50 rounded-full mb-8 flex items-center justify-center text-orange-500">
+                                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                                          </div>
-                                         <h3 class="text-3xl font-bold text-[#1d1d1f] mb-3">Action Button.</h3>
-                                         <p class="text-gray-500 text-base leading-relaxed">The fast track to your favorite feature.</p>
+                                         <h3 class="text-2xl font-bold text-black mb-2">Action Button.</h3>
+                                         <p class="text-gray-500 text-sm leading-relaxed">Fast track to your favorite feature.</p>
                                     </div>
                                     
                                     <!-- Small Card 2 -->
-                                    <div class="bg-black rounded-[2.5rem] p-10 h-[450px] shadow-sm hover:shadow-lg hover:scale-[1.01] transition duration-500 ease-out text-white flex flex-col justify-between overflow-hidden relative cursor-pointer group">
+                                    <div class="bg-black rounded-[2rem] p-8 h-[400px] shadow-sm hover:shadow-md hover:scale-[1.01] transition duration-500 ease-out text-white flex flex-col justify-between overflow-hidden relative">
                                          <div class="z-10">
-                                            <h3 class="text-3xl font-bold">Titanium.</h3>
-                                            <p class="text-gray-400 mt-2 text-lg">So strong. So light.</p>
+                                            <h3 class="text-2xl font-bold">Titanium.</h3>
+                                            <p class="text-gray-400 mt-2">New Class.</p>
                                          </div>
-                                         <div class="absolute inset-0 bg-gradient-to-t from-[#1d1d1f] to-transparent"></div>
-                                         <div class="w-[120%] h-48 bg-gradient-to-r from-gray-700 to-gray-600 absolute -bottom-10 -left-4 rotate-[-10deg] blur-md opacity-50 group-hover:rotate-0 transition duration-700"></div>
+                                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
+                                         <div class="w-full h-40 bg-gray-800 rounded-full blur-2xl absolute -bottom-20 left-1/2 transform -translate-x-1/2 opacity-40"></div>
                                     </div>
                                     
                                     <!-- Medium Card -->
-                                     <div class="md:col-span-2 bg-white rounded-[2.5rem] p-10 h-[300px] shadow-sm hover:shadow-lg hover:scale-[1.01] transition duration-500 ease-out flex items-center justify-between cursor-pointer">
+                                     <div class="md:col-span-2 bg-white rounded-[2rem] p-8 h-[250px] shadow-sm hover:shadow-md hover:scale-[1.01] transition duration-500 ease-out flex items-center justify-between">
                                         <div class="w-1/2">
-                                            <h3 class="text-4xl font-bold text-[#1d1d1f] mb-3">Battery life.</h3>
-                                            <p class="text-gray-500 text-lg">Go ahead, binge away.</p>
+                                            <h3 class="text-3xl font-bold text-black mb-2">Privacy.</h3>
+                                            <p class="text-gray-500">That's iPhone.</p>
                                         </div>
-                                        <div class="text-[5rem] text-[#00ac47] font-bold tracking-tighter">100%</div>
+                                        <div class="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center text-4xl">🔒</div>
                                     </div>
                                 </div>
                             </div>
                         </div>`
             },
             appleVision: {
-                code: `<!-- Pro Vision Dark Mode -->\n<div class="font-inter bg-black min-h-full text-white overflow-hidden relative">\n    <!-- Navbar -->\n    <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto z-50 relative">\n        <div class="font-bold text-xl tracking-tight text-gray-200">Vision.</div>\n        <button class="bg-white text-black px-4 py-1.5 rounded-full text-xs font-medium hover:bg-gray-200 transition">Pre-order</button>\n    </nav>\n\n    <!-- Hero -->\n    <div class="flex flex-col items-center justify-center h-[80vh] text-center relative z-10">\n        <h1 class="text-7xl md:text-9xl font-bold tracking-tighter mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-600">Spatial.<br>Computing.</h1>\n        <button class="px-8 py-3 bg-white/10 border border-white/20 rounded-full backdrop-blur-md hover:bg-white/20 transition">Watch the film</button>\n    </div>\n</div>`,
-                preview: `<div class="font-inter bg-black min-h-full text-white overflow-hidden relative flex flex-col">
-                            <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto z-50 w-full">
+                code: `<!-- Apple Vision Pro Style (Dark) -->
+<div class="font-inter bg-black min-h-full text-white overflow-hidden relative">
+    <!-- Navbar -->
+    <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto z-50 relative">
+        <div class="font-bold text-xl tracking-tight">Vision.</div>
+        <button class="bg-white text-black px-4 py-1.5 rounded-full text-xs font-medium hover:bg-gray-200 transition">Pre-order</button>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex flex-col items-center justify-center h-[80vh] text-center relative z-10">
+        <h1 class="text-6xl md:text-8xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500">Welcome to<br>Spatial Computing</h1>
+        <div class="mt-8">
+            <button class="group relative px-8 py-4 bg-white/10 backdrop-blur-xl rounded-full overflow-hidden transition-all hover:bg-white/20">
+                <span class="relative z-10 text-lg font-medium">Watch the film</span>
+                <div class="absolute inset-0 rounded-full ring-1 ring-white/20 group-hover:ring-white/50 transition"></div>
+            </button>
+        </div>
+    </div>
+
+    <!-- Background Effects -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500 rounded-full blur-[150px] opacity-20 animate-pulse"></div>
+    <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent z-0"></div>
+</div>`,
+                preview: `<div class="font-inter bg-black min-h-full text-white overflow-hidden relative">
+                            <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto z-50 relative">
                                 <div class="font-bold text-xl tracking-tight text-gray-200">Vision.</div>
                                 <div class="flex items-center space-x-6">
                                      <a href="#" class="text-xs text-gray-400 hover:text-white transition">Tech</a>
                                      <a href="#" class="text-xs text-gray-400 hover:text-white transition">Design</a>
-                                    <button class="bg-white text-black px-5 py-2 rounded-full text-xs font-bold hover:bg-gray-200 transition">Notify me</button>
+                                    <button class="bg-white text-black px-4 py-1.5 rounded-full text-xs font-medium hover:bg-gray-200 transition">Notify me</button>
                                 </div>
                             </nav>
-                            <div class="flex-1 flex flex-col items-center justify-center text-center relative z-10">
-                                <div class="text-orange-500 font-bold tracking-[0.2em] text-xs mb-6 uppercase animate-pulse">New Era</div>
-                                <h1 class="text-6xl md:text-9xl font-bold tracking-tighter mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-gray-800 drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">Spatial.<br>Computing.</h1>
-                                <p class="text-xl text-gray-400 max-w-xl mx-auto mb-12 font-light leading-relaxed">Welcome to the era of spatial computing, where digital content blends seamlessly with your physical space.</p>
+                            <div class="flex flex-col items-center justify-center h-[80vh] text-center relative z-10 mt-10">
+                                <div class="text-orange-500 font-medium tracking-wide text-sm mb-4 uppercase">New Era</div>
+                                <h1 class="text-6xl md:text-9xl font-bold tracking-tighter mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-gray-600 drop-shadow-2xl">Spatial.<br>Computing.</h1>
+                                <p class="text-xl text-gray-400 max-w-xl mx-auto mb-10 font-light">The era of spatial computing is here. Digital content blends seamlessly with your physical space.</p>
                                 <div class="flex space-x-4">
-                                    <button class="px-8 py-4 bg-white text-black rounded-full font-medium hover:scale-105 transition duration-300">Learn more</button>
-                                    <button class="px-8 py-4 bg-white/5 border border-white/20 text-white rounded-full font-medium hover:bg-white/10 transition backdrop-blur-md flex items-center">
-                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>
-                                        Watch the film
-                                    </button>
+                                    <button class="px-8 py-3 bg-white text-black rounded-full font-medium hover:bg-gray-200 transition">Learn more</button>
+                                    <button class="px-8 py-3 bg-transparent border border-white/30 text-white rounded-full font-medium hover:bg-white/10 transition backdrop-blur-sm">View specs</button>
                                 </div>
                             </div>
-                            <!-- Ambient Background -->
-                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-900 rounded-full blur-[200px] opacity-20"></div>
-                            <div class="absolute bottom-0 w-full h-32 bg-gradient-to-t from-black to-transparent"></div>
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-600 rounded-full blur-[200px] opacity-20"></div>
+                            <div class="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-pink-600 rounded-full blur-[150px] opacity-10"></div>
                         </div>`
             },
             marketplace: {
@@ -640,164 +826,15 @@
             }
         };
 
-        // Submenu Logic
-        function closeAllSubMenus() {
-            [projectHistorySubmenu, aiSettingsSubmenu, userManualSubmenu, designTemplatesSubmenu].forEach(el => el.classList.add('hidden'));
-            [projectHistoryButton, aiSettingsButton, userManualButton, designTemplatesButton].forEach(el => el.classList.remove('active'));
-        }
-
-        function toggleMenu(button, menu) {
-            const isHidden = menu.classList.contains('hidden');
-            closeAllSubMenus();
-            if (isHidden) {
-                menu.classList.remove('hidden');
-                button.classList.add('active');
-            }
-        }
-
-        // Close menus when clicking outside
-        document.addEventListener('click', (e) => {
-            const menus = [
-                {btn: projectHistoryButton, menu: projectHistorySubmenu},
-                {btn: aiSettingsButton, menu: aiSettingsSubmenu},
-                {btn: userManualButton, menu: userManualSubmenu},
-                {btn: designTemplatesButton, menu: designTemplatesSubmenu}
-            ];
-            
-            let clickedInside = false;
-            menus.forEach(item => {
-                if (item.btn.contains(e.target) || item.menu.contains(e.target)) clickedInside = true;
-            });
-
-            if (!clickedInside && !modalOverlay.contains(e.target) && !modalOverlay.classList.contains('hidden')) {
-                // Do nothing if modal open
-            } else if (!clickedInside && modalOverlay.classList.contains('hidden')) {
-                closeAllSubMenus();
-            }
-        });
-
-        // Bind Menu Clicks
-        [ 
-            {btn: projectHistoryButton, menu: projectHistorySubmenu},
-            {btn: aiSettingsButton, menu: aiSettingsSubmenu},
-            {btn: userManualButton, menu: userManualSubmenu},
-            {btn: designTemplatesButton, menu: designTemplatesSubmenu}
-        ].forEach(pair => pair.btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleMenu(pair.btn, pair.menu);
-        }));
-
-        // View Switching
-        function switchView(viewName) {
-            if (viewName === 'code') {
-                tabCode.classList.add('active');
-                tabPreview.classList.remove('active');
-                
-                viewCode.classList.remove('hidden');
-                viewPreview.classList.add('hidden');
-                outputPanel.classList.remove('bg-gray-100'); 
-                outputPanel.classList.add('bg-gray-900');
-                copyButton.classList.remove('hidden');
-            } else {
-                tabPreview.classList.add('active');
-                tabCode.classList.remove('active');
-
-                viewPreview.classList.remove('hidden');
-                viewCode.classList.add('hidden');
-                outputPanel.classList.remove('bg-gray-900');
-                outputPanel.classList.add('bg-gray-100'); 
-                copyButton.classList.add('hidden');
-            }
-        }
-
-        tabCode.addEventListener('click', () => switchView('code'));
-        tabPreview.addEventListener('click', () => switchView('preview'));
-
-        // Load Project Logic
-        document.querySelectorAll('.project-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                closeAllSubMenus();
-                const pid = item.getAttribute('data-project');
-                if (projectData[pid]) {
-                    codeContent.textContent = projectData[pid].code;
-                    viewPreview.innerHTML = projectData[pid].preview;
-                    switchView('preview');
-                }
-            });
-        });
-
-        // AI Tools Menu Logic
-        document.querySelectorAll('.ai-tool-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
-                closeAllSubMenus();
-                const toolName = item.querySelector('span').textContent;
-                showModal('เครื่องมือ AI', `คุณได้เลือกเมนู: ${toolName}\nระบบกำลังเตรียมเครื่องมือนี้ให้คุณ...`, [
-                    {text: 'ตกลง', type: 'primary', action: () => {}}
-                ]);
-            });
-        });
-
-        // Copy Code
-        copyButton.addEventListener('click', () => {
-            const text = codeContent.textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                copyButton.classList.add('active');
-                const originalHtml = copyButton.innerHTML;
-                copyButton.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
-                setTimeout(() => {
-                    copyButton.innerHTML = originalHtml;
-                    copyButton.classList.remove('active');
-                }, 1500);
-            });
-        });
-
-        // Dummy Undo/Redo
-        undoButton.addEventListener('click', () => {
-             // Visual feedback
-             undoButton.classList.add('scale-90');
-             setTimeout(() => undoButton.classList.remove('scale-90'), 100);
-             console.log('Undo');
-        });
-        redoButton.addEventListener('click', () => {
-             redoButton.classList.add('scale-90');
-             setTimeout(() => redoButton.classList.remove('scale-90'), 100);
-             console.log('Redo');
-        });
-
-        // Modal Actions
-        newCodeButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            closeAllSubMenus();
-            showModal('สร้างโค้ดใหม่', 'คุณต้องการล้างโค้ดปัจจุบันและเริ่มต้นใหม่หรือไม่?', [
-                {text: 'ยกเลิก', type: 'secondary'},
-                {text: 'ยืนยัน', type: 'primary', action: () => {
-                    codeContent.textContent = projectData.marketplace.code;
-                    viewPreview.innerHTML = projectData.marketplace.preview;
-                    switchView('code');
-                }}
-            ]);
-        });
-
-        logoutButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            closeAllSubMenus();
-            showModal('ออกจากระบบ', 'คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?', [
-                {text: 'ยกเลิก', type: 'secondary'},
-                {text: 'ตกลง', type: 'primary', action: () => console.log('Logged out')}
-            ]);
-        });
-
-        // Modal Helper
+        // Modal Functions
         function closeModal() {
             modalOverlay.classList.add('hidden');
             modalActions.innerHTML = '';
         }
 
         function showModal(title, message, buttons) {
-            modalTitle.innerText = title; // Use innerText for safety
-            modalMessage.innerText = message;
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
             modalActions.innerHTML = '';
             
             buttons.forEach(button => {
@@ -819,13 +856,303 @@
             modalOverlay.classList.remove('hidden');
         }
 
-        // Initialize
-        window.onload = function() {
-            // Default to Apple Product to show changes immediately
+        // === Submenu Handling Logic ===
+
+        function isAiSettingsInlineOpen() {
+            return aiSettingsSubmenuInline.style.maxHeight !== '0px';
+        }
+
+        function closeAllSubMenus(excludeAiSettings = false) {
+            // Close all non-AI Settings flyouts
+            [projectHistorySubmenu, userManualSubmenu, designTemplatesSubmenu, profileSubmenu].forEach(el => el.classList.add('hidden'));
+            
+            // Remove active state from non-AI Settings buttons
+            [projectHistoryButton, userManualButton, designTemplatesButton, profileButton].forEach(el => el.classList.remove('active'));
+
+            // Handle AI Settings based on the exclusion flag
+            if (!excludeAiSettings) {
+                // If AI Settings inline is open, collapse it
+                if (isAiSettingsInlineOpen()) {
+                    aiSettingsSubmenuInline.style.maxHeight = '0px';
+                    aiSettingsArrow.classList.remove('rotate-90');
+                }
+                // Always ensure flyout is hidden and button is inactive
+                aiSettingsSubmenuFlyout.classList.add('hidden');
+                aiSettingsButton.classList.remove('active');
+            }
+        }
+
+        function toggleMenu(button, menu) {
+            const isHidden = menu.classList.contains('hidden');
+            closeAllSubMenus(false); // Close everything first
+            
+            if (isHidden) {
+                // Determine flyout position (always flyout for non-AI menu items)
+                const isSidebarCollapsed = sidebar.classList.contains('collapsed');
+                if (isSidebarCollapsed) {
+                    menu.style.left = '80px'; 
+                } else {
+                     menu.style.left = '100%';
+                     menu.style.marginLeft = '16px'; 
+                }
+
+                menu.classList.remove('hidden');
+                button.classList.add('active');
+            }
+        }
+        
+        function toggleAiSettings(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            const isInlineOpen = isAiSettingsInlineOpen();
+
+            if (isCollapsed) {
+                // State 1: Sidebar COLLAPSED -> Use Flyout Menu
+                const isFlyoutHidden = aiSettingsSubmenuFlyout.classList.contains('hidden');
+                closeAllSubMenus(isFlyoutHidden); // Close others, keep AI open if it's already open
+
+                if (isFlyoutHidden) {
+                    // Open flyout
+                    aiSettingsSubmenuFlyout.style.left = '80px';
+                    aiSettingsSubmenuFlyout.classList.remove('hidden');
+                    aiSettingsButton.classList.add('active');
+                }
+            } else {
+                // State 2: Sidebar EXPANDED -> Use Inline Menu
+                closeAllSubMenus(isInlineOpen); // Close others, keep AI open/close handling separate
+
+                if (!isInlineOpen) {
+                    // Open inline menu
+                    aiSettingsSubmenuInline.style.maxHeight = aiSettingsSubmenuInline.scrollHeight + 'px';
+                    aiSettingsArrow.classList.add('rotate-90');
+                    aiSettingsButton.classList.add('active');
+                } else {
+                    // Close inline menu
+                    aiSettingsSubmenuInline.style.maxHeight = '0px';
+                    aiSettingsArrow.classList.remove('rotate-90');
+                    aiSettingsButton.classList.remove('active');
+                }
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            const menuContainers = [
+                document.getElementById('project-history-button').parentElement,
+                document.getElementById('user-manual-button').parentElement,
+                document.getElementById('design-templates-button').parentElement,
+                document.getElementById('profile-button').parentElement,
+                document.getElementById('ai-settings-group') // Check AI Settings group too
+            ];
+            
+            let clickedInsideMenu = false;
+            for (const container of menuContainers) {
+                if (container.contains(e.target)) {
+                    clickedInsideMenu = true;
+                    break;
+                }
+            }
+
+            if (!clickedInsideMenu && !modalOverlay.contains(e.target) && modalOverlay.classList.contains('hidden')) {
+                closeAllSubMenus(false);
+            }
+        });
+
+        // Attach event listeners to all buttons
+        [ 
+            {btn: projectHistoryButton, menu: projectHistorySubmenu},
+            // AI Settings has its own handler now
+            {btn: userManualButton, menu: userManualSubmenu},
+            {btn: designTemplatesButton, menu: designTemplatesSubmenu},
+            {btn: profileButton, menu: profileSubmenu}
+        ].forEach(pair => pair.btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleMenu(pair.btn, pair.menu);
+        }));
+
+        // Attach dedicated handler for AI Settings
+        aiSettingsButton.addEventListener('click', toggleAiSettings);
+
+
+        // === Sidebar Collapsing Logic (The Slide Open/Close) ===
+        function toggleSidebar() {
+            const isCollapsed = sidebar.classList.contains('collapsed');
+
+            // Close all menus before changing layout state
+            closeAllSubMenus(false); 
+
+            if (isCollapsed) {
+                // EXPAND: 20% / 30% / 50%
+                sidebar.classList.remove('collapsed', 'w-[80px]');
+                sidebar.classList.add('w-[20%]');
+                
+                chatPanel.classList.remove('flex-grow', 'chat-flex-ratio');
+                chatPanel.classList.add('w-[30%]');
+                
+                outputPanel.classList.remove('flex-grow', 'output-flex-ratio');
+                outputPanel.classList.add('w-[50%]');
+
+                sidebarToggle.classList.add('rotate-180');
+                sidebarTitle.innerHTML = 'AI Studio'; 
+            } else {
+                // COLLAPSE: 80px / remaining space (split 3:5 ratio)
+                sidebar.classList.remove('w-[20%]');
+                sidebar.classList.add('collapsed', 'w-[80px]');
+                
+                // Set L2 and L3 to grow with the remaining space, based on 3:5 ratio
+                chatPanel.classList.remove('w-[30%]');
+                chatPanel.classList.add('flex-grow', 'chat-flex-ratio'); // 3 parts
+
+                outputPanel.classList.remove('w-[50%]');
+                outputPanel.classList.add('flex-grow', 'output-flex-ratio'); // 5 parts
+
+                sidebarToggle.classList.remove('rotate-180');
+                sidebarTitle.innerHTML = 'AI'; 
+            }
+        }
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        // === End Sidebar Collapsing Logic ===
+
+
+        // View Switching (UPDATED for Neon Buttons and Header consistency)
+        function switchView(viewName) {
+            if (viewName === 'code') {
+                tabCode.classList.add('active');
+                tabPreview.classList.remove('active');
+                
+                viewCode.classList.remove('hidden');
+                viewPreview.classList.add('hidden');
+                outputPanelHeader.classList.remove('bg-gray-100'); // Dark mode container
+                outputPanelHeader.classList.add('bg-gray-900');
+                
+                // ENABLE Copy button (consistent header elements)
+                copyButton.classList.remove('copy-disabled');
+            } else {
+                tabPreview.classList.add('active');
+                tabCode.classList.remove('active');
+
+                viewPreview.classList.remove('hidden');
+                viewCode.classList.add('hidden');
+                outputPanelHeader.classList.remove('bg-gray-900');
+                outputPanelHeader.classList.add('bg-gray-100'); // Light mode container
+                
+                // DISABLE Copy button (consistent header elements)
+                copyButton.classList.add('copy-disabled');
+            }
+        }
+
+        tabCode.addEventListener('click', () => switchView('code'));
+        tabPreview.addEventListener('click', () => switchView('preview'));
+
+        // Load Project
+        document.querySelectorAll('.project-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                closeAllSubMenus();
+                const pid = item.getAttribute('data-project');
+                if (projectData[pid]) {
+                    codeContent.textContent = projectData[pid].code;
+                    viewPreview.innerHTML = projectData[pid].preview;
+                    switchView('preview');
+                }
+            });
+        });
+
+        // NEW: AI Tool Logic (Handles click on the 5 new menu items)
+        document.querySelectorAll('.ai-tool-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                closeAllSubMenus();
+                const toolName = item.getAttribute('data-tool');
+                const displayName = item.querySelector('span').textContent;
+                showModal('เปิดเครื่องมือ AI', `คุณต้องการเปิดเครื่องมือปรับแต่ง: ${displayName} หรือไม่?`, [
+                    {text: 'ยกเลิก', type: 'secondary'},
+                    {text: 'ยืนยัน', type: 'primary', action: () => {
+                        console.log(`Tool ${toolName} activated.`);
+                        // Placeholder for actual AI activation logic or chat message
+                    }}
+                ]);
+            });
+        });
+
+        // Copy
+        copyButton.addEventListener('click', () => {
+            const text = codeContent.textContent;
+            // Fallback for document.execCommand('copy') which works in iframe environment
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            copyButton.classList.add('active');
+            const originalHtml = copyButton.innerHTML;
+            copyButton.innerHTML = `<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+            setTimeout(() => {
+                copyButton.innerHTML = originalHtml;
+                copyButton.classList.remove('active');
+            }, 1500);
+        });
+
+        // Undo/Redo click handlers (Placeholder)
+        undoButton.addEventListener('click', () => {
+            console.log('Undo clicked');
+        });
+
+        redoButton.addEventListener('click', () => {
+            console.log('Redo clicked');
+        });
+
+        // Modal Actions (Updated to use Submenu Button ID)
+        newCodeButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeAllSubMenus();
+            showModal('สร้างโค้ดใหม่', 'คุณต้องการล้างโค้ดปัจจุบันและเริ่มต้นใหม่หรือไม่?', [
+                {text: 'ยกเลิก', type: 'secondary'},
+                {text: 'ยืนยัน', type: 'primary', action: () => {
+                    codeContent.textContent = projectData.marketplace.code;
+                    viewPreview.innerHTML = projectData.marketplace.preview;
+                    switchView('code');
+                }}
+            ]);
+        });
+
+        logoutButtonSubmenu.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            closeAllSubMenus();
+            showModal('ออกจากระบบ', 'คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?', [
+                {text: 'ยกเลิก', type: 'secondary'},
+                {text: 'ตกลง', type: 'primary', action: () => console.log('Logged out')}
+            ]);
+        });
+
+        // Init
+        window.addEventListener('DOMContentLoaded', function() {
+            // Set initial state: Expanded (20% for L1, 30% for L2, 50% for L3)
+            sidebar.classList.remove('w-[80px]', 'collapsed');
+            sidebar.classList.add('w-[20%]');
+            
+            chatPanel.classList.remove('flex-grow', 'chat-flex-ratio');
+            chatPanel.classList.add('w-[30%]');
+            
+            outputPanel.classList.remove('flex-grow', 'output-flex-ratio');
+            outputPanel.classList.add('w-[50%]');
+
+            // Load initial project
             codeContent.textContent = projectData.appleProduct.code;
             viewPreview.innerHTML = projectData.appleProduct.preview;
             switchView('preview'); 
-        };
+            
+            // Adjust sidebar title (since it's initially 20%)
+            sidebarTitle.textContent = 'AI Studio';
+            sidebarToggle.classList.add('rotate-180');
+        });
 
     </script>
 </body>

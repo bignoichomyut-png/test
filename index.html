@@ -226,9 +226,17 @@
             justify-content: flex-start;
             padding: 0.75rem 1rem;
         }
-        /* Ensure arrow for AI Settings is always visible in the expanded state */
-        .sidebar:not(.collapsed) #ai-settings-button {
-            justify-content: space-between !important;
+        /* Ensure arrow for all expandable menus is visible only in expanded state */
+        .sidebar:not(.collapsed) .menu-arrow {
+            display: block !important;
+        }
+        .sidebar.collapsed .menu-arrow {
+            display: none !important;
+        }
+        
+        /* Arrow Rotation Class */
+        .rotate-90 {
+            transform: rotate(90deg);
         }
     </style>
 </head>
@@ -238,16 +246,23 @@
     <div class="flex bg-white text-gray-800 w-full h-full rounded-2xl shadow-2xl overflow-hidden relative">
 
         <!-- ========================================== -->
-        <!-- LAYOUT 1: TOOLSTRIP (20% or 80px)          -->
+        <!-- LAYOUT 1: TOOLSTRIP (25% or 80px)          -->
+        <!-- UPDATED: w-[20%] to w-[25%] -->
         <!-- ========================================== -->
-        <!-- Start with 20% width and mark as NOT collapsed -->
-        <div id="sidebar" class="layout-panel w-[20%] min-w-[80px] flex-shrink-0 bg-white z-30 flex flex-col border-r border-gray-100 sidebar">
+        <div id="sidebar" class="layout-panel w-[25%] min-w-[80px] flex-shrink-0 bg-white z-30 flex flex-col sidebar">
             
             <!-- Header Icon & Collapse Button -->
-            <div class="h-20 flex items-center justify-between px-2 border-b border-gray-100 flex-shrink-0">
-                <h1 id="sidebar-title" class="text-3xl font-bold text-gray-800 tracking-tighter w-full text-center md:text-left md:ml-4 overflow-hidden whitespace-nowrap">AI Studio</h1>
-                <button id="sidebar-toggle" onclick="toggleSidebar()" title="พับเมนู" class="p-2 ml-auto rounded-full hover:bg-gray-100 text-gray-500 transition-transform transform rotate-180 flex-shrink-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            <div id="sidebar-header" class="h-20 flex items-center justify-between px-3 flex-shrink-0 transition-all duration-300 overflow-hidden">
+                <div class="flex items-center min-w-0 overflow-hidden">
+                    <img src="https://imagedelivery.net/ejQIToF7XvP93simjSd62w/cf160594-5170-458f-9bb7-675475135800/sm" alt="Logo" class="h-8 w-8 rounded-md object-cover flex-shrink-0">
+                    <span id="sidebar-title-text" class="ml-3 text-2xl font-bold text-gray-800 tracking-tighter whitespace-nowrap opacity-100 transition-all duration-300 transform translate-x-0 overflow-hidden" style="max-width: 200px;">
+                        BIGBOT
+                    </span>
+                </div>
+                
+                <!-- ADJUSTED: Arrow SVG size changed to w-4 h-4 -->
+                <button id="sidebar-toggle" title="พับเมนู" class="p-2 ml-auto rounded-full hover:bg-gray-100 text-gray-500 transition-transform transform flex-shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
             </div>
             
@@ -264,57 +279,80 @@
                                 <path d="M18 35h12" stroke="#37B2B5" stroke-width="2" stroke-linecap="round"/>
                             </svg>
                         </div>
-                         <span class="sidebar-item-label ml-3 text-sm font-medium text-gray-700">สร้างโค้ดใหม่</span>
+                          <span class="sidebar-item-label ml-3 text-xs font-medium text-gray-700">สร้างโค้ดใหม่</span>
                     </a>
                 </div>
                 
-                <!-- 2. Project History -->
-                <div class="menu-container relative">
-                    <a href="#" title="ประวัติโครงการ" class="menu-item" id="project-history-button">
-                        <div class="icon-glow-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
-                                <path d="M10 40h28V15c0-2-1-4-3-4h-4v-4h-4v4h-4v-4h-4v4h-4c-2 0-3 2-3 4v25z" fill="#D3F3E6" stroke="#37B2B5" stroke-width="2" stroke-linejoin="round"/>
-                                <rect x="15" y="24" width="4" height="16" fill="#37B2B5"/>
-                                <rect x="29" y="24" width="4" height="16" fill="#37B2B5"/>
-                            </svg>
+                <!-- 2. Project History (UPDATED: Expandable) -->
+                <div class="menu-container relative" id="project-history-group">
+                    <a href="#" title="ประวัติโครงการ" class="menu-item justify-between" id="project-history-button">
+                        <div class="flex items-center w-full">
+                            <div class="icon-glow-wrapper flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
+                                    <path d="M10 40h28V15c0-2-1-4-3-4h-4v-4h-4v4h-4v-4h-4v4h-4c-2 0-3 2-3 4v25z" fill="#D3F3E6" stroke="#37B2B5" stroke-width="2" stroke-linejoin="round"/>
+                                    <rect x="15" y="24" width="4" height="16" fill="#37B2B5"/>
+                                    <rect x="29" y="24" width="4" height="16" fill="#37B2B5"/>
+                                </svg>
+                            </div>
+                            <!-- FONT SIZE ADJUSTED to text-xs -->
+                            <span class="sidebar-item-label ml-3 text-xs font-medium text-gray-700 flex-1">ประวัติโครงการ</span>
+                            <svg class="menu-arrow w-4 h-4 text-gray-400 transition-transform rotate-0 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </div>
-                        <span class="sidebar-item-label ml-3 text-sm font-medium text-gray-700">ประวัติโครงการ</span>
                     </a>
-                    <!-- Submenu (Flyout) -->
-                    <div id="project-history-submenu" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-72 space-y-1 hidden border border-gray-100">
-                        <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">โครงการ Apple Style</div>
-                        
-                        <!-- 1. Titanium Series -->
-                        <a href="#" data-project="appleProduct" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <svg class="w-4 h-4 mr-3 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
-                            <span class="text-sm">Titanium Series (Product)</span>
+                    
+                    <!-- Inline Submenu - FONT SIZE ADJUSTED to text-xs -->
+                    <div id="project-history-submenu-inline" class="submenu-inline space-y-1 overflow-hidden transition-all duration-300" style="max-height: 0px;">
+                        <a href="#" data-project="appleProduct" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                             <span class="text-xs">Titanium Series</span>
                         </a>
-                        <!-- 2. Bento Grid -->
-                        <a href="#" data-project="appleGrid" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <svg class="w-4 h-4 mr-3 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect></svg>
-                            <span class="text-sm">Bento Grid Layout</span>
+                        <a href="#" data-project="appleGrid" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                             <span class="text-xs">Bento Grid Layout</span>
                         </a>
-                        <!-- 3. Pro Vision (Dark Mode) -->
-                        <a href="#" data-project="appleVision" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <svg class="w-4 h-4 mr-3 text-black" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                            <span class="text-sm">Pro Vision (Dark Mode)</span>
+                        <a href="#" data-project="appleVision" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                             <span class="text-xs">Pro Vision Dark</span>
                         </a>
+                         <a href="#" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                             <span class="text-xs">SaaS Dashboard</span>
+                        </a>
+                        <a href="#" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                             <span class="text-xs">Portfolio Personal</span>
+                        </a>
+                        <a href="#" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
+                             <span class="text-xs">Wedding Invitation</span>
+                        </a>
+                    </div>
 
+                    <!-- Flyout Submenu - FONT SIZE ADJUSTED to text-xs -->
+                    <div id="project-history-submenu-flyout" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-72 space-y-1 hidden border border-gray-100">
+                        <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">โครงการล่าสุด</div>
+                        <a href="#" data-project="appleProduct" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <span class="text-xs">Titanium Series (Product)</span>
+                        </a>
+                        <a href="#" data-project="appleGrid" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <span class="text-xs">Bento Grid Layout</span>
+                        </a>
+                        <a href="#" data-project="appleVision" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <span class="text-xs">Pro Vision (Dark Mode)</span>
+                        </a>
+                        <a href="#" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <span class="text-xs">SaaS Dashboard</span>
+                        </a>
+                        <a href="#" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <span class="text-xs">Portfolio Personal</span>
+                        </a>
+                         <a href="#" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <span class="text-xs">Wedding Invitation</span>
+                        </a>
                         <div class="border-t border-gray-100 my-1"></div>
-                        <div class="text-xs font-semibold text-gray-400 pb-1 px-2 uppercase tracking-wider">อื่นๆ</div>
-                        
-                         <!-- 4. E-Marketplace -->
-                         <a href="#" data-project="marketplace" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <svg class="w-4 h-4 mr-3 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0"></path></svg>
-                            <span class="text-sm text-gray-500">E-Marketplace</span>
+                        <a href="#" data-project="marketplace" class="project-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
+                            <span class="text-xs text-gray-500">E-Marketplace</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- 3. AI Settings - MODIFIED FOR EXPANDABLE INLINE/FLYOUT -->
+                <!-- 3. AI Settings (Expandable) -->
                 <div class="menu-container relative" id="ai-settings-group">
-                    <!-- Main Button -->
-                    <a href="#" title="การตั้งค่า AI" class="menu-item" id="ai-settings-button">
+                    <a href="#" title="การตั้งค่า AI" class="menu-item justify-between" id="ai-settings-button">
                         <div class="flex items-center w-full">
                             <div class="icon-glow-wrapper flex-shrink-0">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
@@ -323,145 +361,154 @@
                                     <path d="M24 4V10M38 12L34 16M44 24H38M38 36L34 32M24 44V38M10 36L14 32M4 24H10M10 12L14 16" stroke="#5d9ee7" stroke-width="2" stroke-linecap="round"/>
                                 </svg>
                             </div>
-                            <span class="sidebar-item-label ml-3 text-sm font-medium text-gray-700 flex-1">การตั้งค่า AI</span>
-                            <!-- Arrow icon for rotation (only visible when sidebar is expanded) -->
-                            <svg id="ai-settings-arrow" class="w-4 h-4 text-gray-400 transition-transform rotate-0 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <!-- FONT SIZE ADJUSTED to text-xs -->
+                            <span class="sidebar-item-label ml-3 text-xs font-medium text-gray-700 flex-1">การตั้งค่า AI</span>
+                            <svg class="menu-arrow w-4 h-4 text-gray-400 transition-transform rotate-0 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </div>
                     </a>
                     
-                    <!-- Inline Submenu (Collapsible content for EXPANDED state) -->
-                    <!-- ปรับ class เพื่อจัดระยะห่างของเมนูย่อยให้เหมาะสม -->
-                    <div id="ai-settings-submenu-inline" class="space-y-1 overflow-hidden transition-all duration-300" style="max-height: 0px;">
-                        <div class="text-xs font-semibold text-gray-500 pt-1 pb-1 uppercase tracking-wider ml-9">เครื่องมือปรับแต่ง</div>
-                        
-                        <!-- 1. สี (Color) - เปลี่ยนเป็น Rainbow emoji -->
-                        <a href="#" data-tool="สี" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
-                            <span class="text-sm">🌈 สี (Color)</span>
-                        </a>
-                        
-                        <!-- 2. รูปภาพ (Image) - เปลี่ยนเป็น Camera emoji -->
-                        <a href="#" data-tool="รูปภาพ" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
-                            <span class="text-sm">📸 รูปภาพ (Image)</span>
-                        </a>
-
-                        <!-- 3. วิดีโอ (Video) - เปลี่ยนเป็น Clapboard emoji -->
-                        <a href="#" data-tool="วิดีโอ" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
-                            <span class="text-sm">🎬 วิดีโอ (Video)</span>
-                        </a>
-                        
-                        <!-- 4. ลิ้งค์ URL (Links) - เปลี่ยนเป็น Sparkle emoji -->
-                        <a href="#" data-tool="ลิ้งค์" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
-                            <span class="text-sm">✨ ลิ้งค์ URL (Links)</span>
-                        </a>
-
-                        <!-- 5. ฟอนต์ (Font) - เปลี่ยนเป็น Fountain Pen emoji -->
-                        <a href="#" data-tool="ฟอนต์" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9">
-                            <span class="text-sm">🖋️ ฟอนต์ (Font)</span>
-                        </a>
+                    <!-- Inline - FONT SIZE ADJUSTED to text-xs -->
+                    <div id="ai-settings-submenu-inline" class="submenu-inline space-y-1 overflow-hidden transition-all duration-300" style="max-height: 0px;">
+                        <a href="#" data-tool="สี" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">🌈 สี (Color)</span></a>
+                        <a href="#" data-tool="รูปภาพ" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">📸 รูปภาพ (Image)</span></a>
+                        <a href="#" data-tool="วิดีโอ" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">🎬 วิดีโอ (Video)</span></a>
+                        <a href="#" data-tool="ลิ้งค์" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">✨ ลิ้งค์ URL</span></a>
+                        <a href="#" data-tool="ฟอนต์" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">🖋️ ฟอนต์ (Font)</span></a>
                     </div>
                     
-                    <!-- Flyout Submenu (Absolute positioned for COLLAPSED state) -->
+                    <!-- Flyout - FONT SIZE ADJUSTED to text-xs -->
                     <div id="ai-settings-submenu-flyout" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-56 space-y-1 hidden border border-gray-100">
                          <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">เครื่องมือปรับแต่ง</div>
-                        
-                        <!-- 1. สี (Color) - อัพเดท SVG ให้มินิมอลขึ้น -->
                         <a href="#" data-tool="สี" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
                             <svg class="w-4 h-4 mr-3 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.5 7.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1-5 0zM12 21l8-8-4-4-4 8z"/></svg>
-                            <span class="text-sm">🎨 สี (Color)</span>
+                            <span class="text-xs">🎨 สี (Color)</span>
                         </a>
-                        
-                        <!-- 2. รูปภาพ (Image) - คง SVG มินิมอลเดิม -->
                         <a href="#" data-tool="รูปภาพ" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
                             <svg class="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            <span class="text-sm">🖼️ รูปภาพ (Image)</span>
+                            <span class="text-xs">🖼️ รูปภาพ (Image)</span>
                         </a>
-
-                        <!-- 3. วิดีโอ (Video) - คง SVG มินิมอลเดิม -->
                         <a href="#" data-tool="วิดีโอ" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
                             <svg class="w-4 h-4 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <span class="text-sm">🎥 วิดีโอ (Video)</span>
+                            <span class="text-xs">🎥 วิดีโอ (Video)</span>
                         </a>
-                        
-                        <!-- 4. ลิ้งค์ URL (Links) - คง SVG มินิมอลเดิม -->
                         <a href="#" data-tool="ลิ้งค์" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
                             <svg class="w-4 h-4 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                            <span class="text-sm">🔗 ลิ้งค์ URL (Links)</span>
+                            <span class="text-xs">🔗 ลิ้งค์ URL (Links)</span>
                         </a>
-
-                        <!-- 5. ฟอนต์ (Font) - คง SVG มินิมอลเดิม -->
                         <a href="#" data-tool="ฟอนต์" class="ai-tool-item flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
                             <svg class="w-4 h-4 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            <span class="text-sm">🔠 ฟอนต์ (Font)</span>
+                            <span class="text-xs">🔠 ฟอนต์ (Font)</span>
                         </a>
                     </div>
                 </div>
                 
-                <!-- 4. Design Templates -->
-                <div class="menu-container relative">
-                    <a href="#" title="เทมเพลตดีไซน์" class="menu-item" id="design-templates-button">
-                        <div class="icon-glow-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
-                                <circle cx="24" cy="24" r="18" fill="#D3F3E6" stroke="#37B2B5" stroke-width="2"/>
-                                <path d="M24 16c2 0 4 1 4 3 0 2-1 3-2 4s-2 2-2 4M24 33h.01" stroke="#37B2B5" stroke-width="3" stroke-linecap="round"/>
-                            </svg>
+                <!-- 4. Design Templates (UPDATED: Expandable) -->
+                <div class="menu-container relative" id="design-templates-group">
+                    <a href="#" title="เทมเพลตดีไซน์" class="menu-item justify-between" id="design-templates-button">
+                        <div class="flex items-center w-full">
+                            <div class="icon-glow-wrapper flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
+                                    <circle cx="24" cy="24" r="18" fill="#D3F3E6" stroke="#37B2B5" stroke-width="2"/>
+                                    <path d="M24 16c2 0 4 1 4 3 0 2-1 3-2 4s-2 2-2 4M24 33h.01" stroke="#37B2B5" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <!-- FONT SIZE ADJUSTED to text-xs -->
+                            <span class="sidebar-item-label ml-3 text-xs font-medium text-gray-700 flex-1">เทมเพลตดีไซน์</span>
+                            <svg class="menu-arrow w-4 h-4 text-gray-400 transition-transform rotate-0 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </div>
-                        <span class="sidebar-item-label ml-3 text-sm font-medium text-gray-700">เทมเพลตดีไซน์</span>
                     </a>
-                    <!-- Submenu -->
-                    <div id="design-templates-submenu" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-64 space-y-1 hidden border border-gray-100">
+                    
+                    <!-- Inline - FONT SIZE ADJUSTED to text-xs -->
+                    <div id="design-templates-submenu-inline" class="submenu-inline space-y-1 overflow-hidden transition-all duration-300" style="max-height: 0px;">
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">E-commerce</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">Blog Layout</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">Corporate Biz</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">Portfolio</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">Login & Sign Up</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">Pricing Tables</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">News Magazine</span></a>
+                    </div>
+
+                    <!-- Flyout - FONT SIZE ADJUSTED to text-xs -->
+                    <div id="design-templates-submenu-flyout" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-64 space-y-1 hidden border border-gray-100">
                         <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">ตัวอย่างเทมเพลต</div>
-                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <span class="text-sm">E-commerce Product Page</span>
-                        </a>
-                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <span class="text-sm">Blog Post Layout</span>
-                        </a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150"><span class="text-xs">E-commerce Product Page</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150"><span class="text-xs">Blog Post Layout</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150"><span class="text-xs">Corporate Business</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150"><span class="text-xs">Portfolio Gallery</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150"><span class="text-xs">Login & Sign Up</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150"><span class="text-xs">Pricing Tables</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150"><span class="text-xs">News Magazine</span></a>
                     </div>
                 </div>
 
-                 <!-- 5. User Manual -->
-                <div class="menu-container relative">
-                    <a href="#" title="คู่มือการใช้งาน" class="menu-item" id="user-manual-button">
-                        <div class="icon-glow-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
-                                <path d="M24 4c-5 0-9 4-9 9 0 4 3 7 3 9v7h12v-7c0-2 3-5 3-9 0-5-4-9-9-9z" fill="#FDE0C4" stroke="#F7A823" stroke-width="2" stroke-linejoin="round"/>
-                                <rect x="20" y="32" width="8" height="6" fill="#FDE0C4" stroke="#F7A823" stroke-width="2" stroke-linejoin="round"/>
-                            </svg>
+                 <!-- 5. User Manual (UPDATED: Expandable) -->
+                <div class="menu-container relative" id="user-manual-group">
+                    <a href="#" title="คู่มือการใช้งาน" class="menu-item justify-between" id="user-manual-button">
+                        <div class="flex items-center w-full">
+                            <div class="icon-glow-wrapper flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
+                                    <path d="M24 4c-5 0-9 4-9 9 0 4 3 7 3 9v7h12v-7c0-2 3-5 3-9 0-5-4-9-9-9z" fill="#FDE0C4" stroke="#F7A823" stroke-width="2" stroke-linejoin="round"/>
+                                    <rect x="20" y="32" width="8" height="6" fill="#FDE0C4" stroke="#F7A823" stroke-width="2" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <!-- FONT SIZE ADJUSTED to text-xs -->
+                            <span class="sidebar-item-label ml-3 text-xs font-medium text-gray-700 flex-1">คู่มือการใช้งาน</span>
+                            <svg class="menu-arrow w-4 h-4 text-gray-400 transition-transform rotate-0 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </div>
-                        <span class="sidebar-item-label ml-3 text-sm font-medium text-gray-700">คู่มือการใช้งาน</span>
                     </a>
-                    <!-- Submenu -->
-                    <div id="user-manual-submenu" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-48 space-y-1 hidden border border-gray-100">
+                    
+                    <!-- Inline - FONT SIZE ADJUSTED to text-xs -->
+                    <div id="user-manual-submenu-inline" class="submenu-inline space-y-1 overflow-hidden transition-all duration-300" style="max-height: 0px;">
+                         <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">เริ่มต้นการใช้งาน</span></a>
+                         <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">เทคนิคขั้นสูง</span></a>
+                    </div>
+
+                    <!-- Flyout - FONT SIZE ADJUSTED to text-xs -->
+                    <div id="user-manual-submenu-flyout" class="absolute left-[70px] top-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-48 space-y-1 hidden border border-gray-100">
                         <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">คู่มือการใช้งาน</div>
-                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <span class="text-sm">คู่มือเริ่มต้นการใช้งาน</span>
-                        </a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150"><span class="text-xs">คู่มือเริ่มต้นการใช้งาน</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150"><span class="text-xs">เทคนิคขั้นสูง (Advanced)</span></a>
                     </div>
                 </div>
                 
-                 <!-- 6. Account / Profile (NEW) -->
-                <div class="menu-container relative">
-                    <a href="#" title="บัญชีผู้ใช้" class="menu-item" id="profile-button">
-                        <div class="icon-glow-wrapper">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-gray-500">
-                                <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.03 18.03 0 0112 21.75c-2.88 0-5.43-1.025-7.468-2.65.111-.08.223-.159.336-.234z" clip-rule="evenodd" />
-                            </svg>
+                 <!-- 6. Account / Profile (UPDATED: Expandable) -->
+                <div class="menu-container relative" id="profile-group">
+                    <a href="#" title="บัญชีผู้ใช้" class="menu-item justify-between" id="profile-button">
+                        <div class="flex items-center w-full">
+                             <div class="icon-glow-wrapper flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-gray-500">
+                                    <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.03 18.03 0 0112 21.75c-2.88 0-5.43-1.025-7.468-2.65.111-.08.223-.159.336-.234z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <!-- FONT SIZE ADJUSTED to text-xs -->
+                            <span class="sidebar-item-label ml-3 text-xs font-medium text-gray-700 flex-1">บัญชีผู้ใช้</span>
+                             <svg class="menu-arrow w-4 h-4 text-gray-400 transition-transform rotate-0 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                         </div>
-                        <span class="sidebar-item-label ml-3 text-sm font-medium text-gray-700">บัญชีผู้ใช้</span>
                     </a>
-                    <!-- Submenu -->
-                    <div id="profile-submenu" class="absolute left-[70px] bottom-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-56 space-y-1 hidden border border-gray-100">
+                    
+                     <!-- Inline - FONT SIZE ADJUSTED to text-xs -->
+                    <div id="profile-submenu-inline" class="submenu-inline space-y-1 overflow-hidden transition-all duration-300" style="max-height: 0px;">
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">แก้ไขข้อมูลส่วนตัว</span></a>
+                        <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ml-9"><span class="text-xs">จัดการแพ็กเกจ</span></a>
+                         <a href="#" title="ออกจากระบบ" class="logout-item flex items-center p-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition duration-150 ml-9" id="logout-button-inline">
+                            <span class="text-xs">ออกจากระบบ</span>
+                        </a>
+                    </div>
+
+                    <!-- Flyout - FONT SIZE ADJUSTED to text-xs -->
+                    <div id="profile-submenu-flyout" class="absolute left-[70px] bottom-0 z-50 bg-white rounded-xl shadow-2xl p-2 w-56 space-y-1 hidden border border-gray-100">
                         <div class="text-xs font-semibold text-gray-500 pb-1 px-2 uppercase tracking-wider">เมนูบัญชี</div>
                         <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <span class="text-sm">แก้ไขข้อมูลส่วนตัว</span>
+                            <span class="text-xs">แก้ไขข้อมูลส่วนตัว</span>
                         </a>
                         <a href="#" class="flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150">
-                            <span class="text-sm">จัดการแพ็กเกจ</span>
+                            <span class="text-xs">จัดการแพ็กเกจ</span>
                         </a>
                         <div class="border-t border-gray-100 my-1"></div>
                          <a href="#" title="ออกจากระบบ" class="logout-item flex items-center p-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition duration-150" id="logout-button-submenu">
                             <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                            <span class="text-sm">ออกจากระบบ</span>
+                            <span class="text-xs">ออกจากระบบ</span>
                         </a>
                     </div>
                 </div>
@@ -472,10 +519,11 @@
         </div>
         
         <!-- ========================================== -->
-        <!-- LAYOUT 2: CHAT PANEL (30%)                 -->
+        <!-- LAYOUT 2: CHAT PANEL (28%)                 -->
+        <!-- UPDATED: w-[30%] to w-[28%] -->
         <!-- ========================================== -->
-        <div id="chat-panel" class="layout-panel w-[30%] min-w-[300px] flex flex-col bg-white flex-shrink-0 relative z-20 border-r border-gray-100 shadow-[2px_0_20px_rgba(0,0,0,0.02)]">
-            <header class="p-4 h-20 flex flex-col justify-center flex-shrink-0 border-b border-gray-100">
+        <div id="chat-panel" class="layout-panel w-[28%] min-w-[300px] flex flex-col bg-white flex-shrink-0 relative z-20 shadow-[2px_0_20px_rgba(0,0,0,0.02)]">
+            <header class="p-4 h-20 flex flex-col justify-center flex-shrink-0">
                 <h2 class="text-lg font-semibold text-gray-800">ช่องสั่งงาน AI</h2>
                 <p class="text-sm text-gray-500">พิมพ์คำสั่งของคุณเพื่อสร้างโค้ด</p>
             </header>
@@ -500,7 +548,7 @@
                 </div>
             </div>
 
-            <footer class="p-4 bg-white flex-shrink-0 border-t border-gray-100">
+            <footer class="p-4 bg-white flex-shrink-0">
                 <div class="input-container">
                     <textarea id="prompt-input" rows="2" class="w-full p-3 bg-gray-50 rounded-xl transition duration-150 resize-none shadow-inner text-sm focus:bg-white tech-input" placeholder="พิมพ์คำสั่ง..."></textarea>
                     <button id="send-button" class="send-button-inside flex items-center justify-center bg-gradient-to-r from-[#53D4D6] to-[#37B2B5] text-white font-semibold rounded-full shadow-lg hover:from-[#37B2B5] hover:to-[#2A9B9E]">
@@ -511,10 +559,11 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- LAYOUT 3: OUTPUT PANEL (50%)               -->
+        <!-- LAYOUT 3: OUTPUT PANEL (47%)               -->
+        <!-- UPDATED: w-[50%] to w-[47%] -->
         <!-- ========================================== -->
-        <div id="output-panel" class="layout-panel w-[50%] flex flex-col flex-1 bg-white min-w-0">
-            <header class="p-4 bg-white flex items-center justify-between h-20 flex-shrink-0 border-b border-gray-100">
+        <div id="output-panel" class="layout-panel w-[47%] flex flex-col flex-1 bg-white min-w-0">
+            <header class="p-4 bg-white flex items-center justify-between h-20 flex-shrink-0">
                 <h2 class="text-lg font-semibold text-gray-800">แสดงผลลัพธ์</h2>
                 <div class="flex items-center space-x-4">
                     <!-- Undo/Redo Buttons (Adjusted for compactness) -->
@@ -574,7 +623,8 @@
     <script>
         // DOM Elements
         const sidebar = document.getElementById('sidebar');
-        const sidebarTitle = document.getElementById('sidebar-title');
+        const sidebarHeader = document.getElementById('sidebar-header');
+        const sidebarTitleText = document.getElementById('sidebar-title-text');
         const sidebarToggle = document.getElementById('sidebar-toggle');
         const chatPanel = document.getElementById('chat-panel');
         const outputPanel = document.getElementById('output-panel');
@@ -587,23 +637,10 @@
         const copyButton = document.getElementById('copy-button');
         const codeContent = document.getElementById('code-content');
         
-        // Menus
-        const projectHistoryButton = document.getElementById('project-history-button');
-        const projectHistorySubmenu = document.getElementById('project-history-submenu');
-        const aiSettingsButton = document.getElementById('ai-settings-button');
-        const aiSettingsArrow = document.getElementById('ai-settings-arrow');
-        const aiSettingsSubmenuInline = document.getElementById('ai-settings-submenu-inline');
-        const aiSettingsSubmenuFlyout = document.getElementById('ai-settings-submenu-flyout');
-        const userManualButton = document.getElementById('user-manual-button'); 
-        const userManualSubmenu = document.getElementById('user-manual-submenu'); 
-        const designTemplatesButton = document.getElementById('design-templates-button');
-        const designTemplatesSubmenu = document.getElementById('design-templates-submenu');
-        const profileButton = document.getElementById('profile-button');
-        const profileSubmenu = document.getElementById('profile-submenu');
-        
         // Modal
         const newCodeButton = document.getElementById('new-code-button');
         const logoutButtonSubmenu = document.getElementById('logout-button-submenu');
+        const logoutButtonInline = document.getElementById('logout-button-inline'); // Added inline logout
         const modalOverlay = document.getElementById('custom-modal-overlay');
         const modalTitle = document.getElementById('modal-title');
         const modalMessage = document.getElementById('modal-message');
@@ -616,213 +653,13 @@
         // Project Data (Updated with Apple-style websites)
         const projectData = {
             appleProduct: {
-                code: `<!-- Apple Style Product Page -->
-<div class="font-inter bg-white min-h-full">
-    <!-- Navbar -->
-    <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">
-        <div class="font-bold text-xl tracking-tight">Titanium.</div>
-        <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">
-            <a href="#" class="hover:text-black transition">Overview</a>
-            <a href="#" class="hover:text-black transition">Specs</a>
-            <a href="#" class="hover:text-black transition">Compare</a>
-        </div>
-        <button class="bg-[#0071e3] text-white px-3 py-1 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>
-    </nav>
-
-    <!-- Hero -->
-    <div class="text-center pt-16 pb-24 px-4">
-        <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>
-        <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>
-        <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">
-            <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">></span></a>
-            <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">></span></a>
-        </div>
-        <!-- Mockup Image -->
-        <div class="max-w-4xl mx-auto">
-             <div class="aspect-[16/9] bg-gray-100 rounded-3xl flex items-center justify-center shadow-sm">
-                <span class="text-gray-300 font-bold text-4xl">Product Image Mockup</span>
-             </div>
-        </div>
-    </div>
-</div>`,
-                preview: `<div class="font-inter bg-white min-h-full">
-                            <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">
-                                <div class="font-bold text-xl tracking-tight text-black">Titanium.</div>
-                                <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">
-                                    <a href="#" class="hover:text-black transition">Overview</a>
-                                    <a href="#" class="hover:text-black transition">Specs</a>
-                                    <a href="#" class="hover:text-black transition">Compare</a>
-                                </div>
-                                <button class="bg-[#0071e3] text-white px-4 py-1.5 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>
-                            </nav>
-                            <div class="text-center pt-16 pb-24 px-4">
-                                <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>
-                                <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>
-                                <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">
-                                    <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">›</span></a>
-                                    <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">›</span></a>
-                                </div>
-                                <div class="max-w-4xl mx-auto">
-                                     <div class="aspect-[16/9] bg-gradient-to-tr from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center shadow-inner">
-                                        <div class="w-1/2 h-1/2 bg-gray-300 rounded-xl flex items-center justify-center text-gray-500">Titanium Frame</div>
-                                     </div>
-                                </div>
-                            </div>
-                        </div>`
+                code: `<!-- Apple Style Product Page -->\n<div class="font-inter bg-white min-h-full">\n    <!-- Navbar -->\n    <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">\n        <div class="font-bold text-xl tracking-tight">Titanium.</div>\n        <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">\n            <a href="#" class="hover:text-black transition">Overview</a>\n            <a href="#" class="hover:text-black transition">Specs</a>\n            <a href="#" class="hover:text-black transition">Compare</a>\n        </div>\n        <button class="bg-[#0071e3] text-white px-3 py-1 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>\n    </nav>\n\n    <!-- Hero -->\n    <div class="text-center pt-16 pb-24 px-4">\n        <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>\n        <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>\n        <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">\n            <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">></span></a>\n            <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">></span></a>\n        </div>\n        <!-- Mockup Image -->\n        <div class="max-w-4xl mx-auto">\n             <div class="aspect-[16/9] bg-gray-100 rounded-3xl flex items-center justify-center shadow-sm">\n                <span class="text-gray-300 font-bold text-4xl">Product Image Mockup</span>\n             </div>\n        </div>\n    </div>\n</div>`,
+                preview: `<div class="font-inter bg-white min-h-full">\n                            <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto backdrop-blur-md bg-white/70 sticky top-0 z-50">\n                                <div class="font-bold text-xl tracking-tight text-black">Titanium.</div>\n                                <div class="hidden md:flex space-x-8 text-xs font-medium text-gray-600">\n                                    <a href="#" class="hover:text-black transition">Overview</a>\n                                    <a href="#" class="hover:text-black transition">Specs</a>\n                                    <a href="#" class="hover:text-black transition">Compare</a>\n                                </div>\n                                <button class="bg-[#0071e3] text-white px-4 py-1.5 rounded-full text-xs hover:bg-[#0077ED] transition">Buy</button>\n                            </nav>\n                            <div class="text-center pt-16 pb-24 px-4">\n                                <h2 class="text-[#1d1d1f] text-5xl md:text-7xl font-semibold tracking-tight mb-2">Titanium.</h2>\n                                <p class="text-xl md:text-2xl text-[#1d1d1f] font-medium mb-8">So strong. So light. So Pro.</p>\n                                <div class="flex justify-center space-x-6 text-[#0071e3] text-lg font-medium mb-12">\n                                    <a href="#" class="hover:underline flex items-center">Learn more <span class="ml-1 text-sm">›</span></a>\n                                    <a href="#" class="hover:underline flex items-center">Buy <span class="ml-1 text-sm">›</span></a>\n                                </div>\n                                <div class="max-w-4xl mx-auto">\n                                     <div class="aspect-[16/9] bg-gradient-to-tr from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center shadow-inner">\n                                        <div class="w-1/2 h-1/2 bg-gray-300 rounded-xl flex items-center justify-center text-gray-500">Titanium Frame</div>\n                                     </div>\n                                </div>\n                            </div>\n                        </div>`
             },
-            appleGrid: {
-                code: `<!-- Apple Style Bento Grid -->
-<div class="font-inter bg-[#f5f5f7] min-h-full p-8 md:p-16">
-    <div class="max-w-6xl mx-auto">
-        <h2 class="text-4xl md:text-6xl font-bold text-[#1d1d1f] mb-12">Get to know.</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Large Card -->
-            <div class="md:col-span-2 bg-white rounded-3xl p-8 h-[400px] shadow-sm hover:scale-[1.02] transition duration-300 flex flex-col justify-between overflow-hidden relative">
-                <div class="z-10">
-                    <p class="text-sm font-semibold text-gray-500 uppercase mb-2">Connectivity</p>
-                    <h3 class="text-3xl font-bold text-black">Fastest ever.</h3>
-                </div>
-                <div class="absolute bottom-0 right-0 w-2/3 h-2/3 bg-blue-50 rounded-tl-full opacity-50"></div>
-            </div>
-            
-            <!-- Small Card 1 -->
-            <div class="bg-white rounded-3xl p-8 h-[400px] shadow-sm hover:scale-[1.02] transition duration-300 flex flex-col items-center justify-center text-center">
-                 <div class="w-20 h-20 bg-orange-100 rounded-full mb-6 flex items-center justify-center text-orange-500">
-                    <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/></svg>
-                 </div>
-                 <h3 class="text-2xl font-bold text-black mb-2">Silent Mode</h3>
-                 <p class="text-gray-500">Focus on what matters.</p>
-            </div>
-            
-            <!-- Small Card 2 -->
-            <div class="bg-black rounded-3xl p-8 h-[400px] shadow-sm hover:scale-[1.02] transition duration-300 text-white flex flex-col justify-between">
-                 <h3 class="text-2xl font-bold">Night Mode.<br>Clearer than ever.</h3>
-                 <div class="w-full h-32 bg-gray-800 rounded-xl mt-4 opacity-80"></div>
-            </div>
-            
-            <!-- Medium Card -->
-             <div class="md:col-span-2 bg-white rounded-3xl p-8 h-[300px] shadow-sm hover:scale-[1.02] transition duration-300 flex items-center justify-between">
-                <div class="w-1/2">
-                    <h3 class="text-3xl font-bold text-black mb-4">Privacy.</h3>
-                    <p class="text-gray-500">That's iPhone.</p>
-                </div>
-                <div class="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center text-4xl">🔒</div>
-            </div>
-        </div>
-    </div>
-</div>`,
-                preview: `<div class="font-inter bg-[#f5f5f7] min-h-full p-8 md:p-16">
-                            <div class="max-w-6xl mx-auto">
-                                <h2 class="text-4xl md:text-6xl font-bold text-[#1d1d1f] mb-12">Get to know.</h2>
-                                
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <!-- Large Card -->
-                                    <div class="md:col-span-2 bg-white rounded-[2rem] p-8 h-[400px] shadow-sm hover:shadow-md hover:scale-[1.01] transition duration-500 ease-out flex flex-col justify-between overflow-hidden relative group">
-                                        <div class="z-10">
-                                            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Performance</p>
-                                            <h3 class="text-4xl font-bold text-black">A17 Pro chip. <br><span class="text-gray-400">A monster win for gaming.</span></h3>
-                                        </div>
-                                        <div class="absolute -bottom-10 -right-10 w-64 h-64 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full blur-3xl opacity-60 group-hover:opacity-80 transition"></div>
-                                        <div class="w-full h-32 bg-gray-50 rounded-xl mt-auto border border-gray-100 relative z-10 flex items-center justify-center text-gray-300">GPU Illustration</div>
-                                    </div>
-                                    
-                                    <!-- Small Card 1 -->
-                                    <div class="bg-white rounded-[2rem] p-8 h-[400px] shadow-sm hover:shadow-md hover:scale-[1.01] transition duration-500 ease-out flex flex-col items-center justify-center text-center">
-                                         <div class="w-24 h-24 bg-orange-50 rounded-full mb-8 flex items-center justify-center text-orange-500">
-                                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                                         </div>
-                                         <h3 class="text-2xl font-bold text-black mb-2">Action Button.</h3>
-                                         <p class="text-gray-500 text-sm leading-relaxed">Fast track to your favorite feature.</p>
-                                    </div>
-                                    
-                                    <!-- Small Card 2 -->
-                                    <div class="bg-black rounded-[2rem] p-8 h-[400px] shadow-sm hover:shadow-md hover:scale-[1.01] transition duration-500 ease-out text-white flex flex-col justify-between overflow-hidden relative">
-                                         <div class="z-10">
-                                            <h3 class="text-2xl font-bold">Titanium.</h3>
-                                            <p class="text-gray-400 mt-2">New Class.</p>
-                                         </div>
-                                         <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
-                                         <div class="w-full h-40 bg-gray-800 rounded-full blur-2xl absolute -bottom-20 left-1/2 transform -translate-x-1/2 opacity-40"></div>
-                                    </div>
-                                    
-                                    <!-- Medium Card -->
-                                     <div class="md:col-span-2 bg-white rounded-[2rem] p-8 h-[250px] shadow-sm hover:shadow-md hover:scale-[1.01] transition duration-500 ease-out flex items-center justify-between">
-                                        <div class="w-1/2">
-                                            <h3 class="text-3xl font-bold text-black mb-2">Privacy.</h3>
-                                            <p class="text-gray-500">That's iPhone.</p>
-                                        </div>
-                                        <div class="w-40 h-40 bg-gray-100 rounded-full flex items-center justify-center text-4xl">🔒</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`
-            },
-            appleVision: {
-                code: `<!-- Apple Vision Pro Style (Dark) -->
-<div class="font-inter bg-black min-h-full text-white overflow-hidden relative">
-    <!-- Navbar -->
-    <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto z-50 relative">
-        <div class="font-bold text-xl tracking-tight">Vision.</div>
-        <button class="bg-white text-black px-4 py-1.5 rounded-full text-xs font-medium hover:bg-gray-200 transition">Pre-order</button>
-    </nav>
-
-    <!-- Main Content -->
-    <div class="flex flex-col items-center justify-center h-[80vh] text-center relative z-10">
-        <h1 class="text-6xl md:text-8xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-b from-white to-gray-500">Welcome to<br>Spatial Computing</h1>
-        <div class="mt-8">
-            <button class="group relative px-8 py-4 bg-white/10 backdrop-blur-xl rounded-full overflow-hidden transition-all hover:bg-white/20">
-                <span class="relative z-10 text-lg font-medium">Watch the film</span>
-                <div class="absolute inset-0 rounded-full ring-1 ring-white/20 group-hover:ring-white/50 transition"></div>
-            </button>
-        </div>
-    </div>
-
-    <!-- Background Effects -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500 rounded-full blur-[150px] opacity-20 animate-pulse"></div>
-    <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black to-transparent z-0"></div>
-</div>`,
-                preview: `<div class="font-inter bg-black min-h-full text-white overflow-hidden relative">
-                            <nav class="flex justify-between items-center py-4 px-8 max-w-7xl mx-auto z-50 relative">
-                                <div class="font-bold text-xl tracking-tight text-gray-200">Vision.</div>
-                                <div class="flex items-center space-x-6">
-                                     <a href="#" class="text-xs text-gray-400 hover:text-white transition">Tech</a>
-                                     <a href="#" class="text-xs text-gray-400 hover:text-white transition">Design</a>
-                                    <button class="bg-white text-black px-4 py-1.5 rounded-full text-xs font-medium hover:bg-gray-200 transition">Notify me</button>
-                                </div>
-                            </nav>
-                            <div class="flex flex-col items-center justify-center h-[80vh] text-center relative z-10 mt-10">
-                                <div class="text-orange-500 font-medium tracking-wide text-sm mb-4 uppercase">New Era</div>
-                                <h1 class="text-6xl md:text-9xl font-bold tracking-tighter mb-6 bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-gray-600 drop-shadow-2xl">Spatial.<br>Computing.</h1>
-                                <p class="text-xl text-gray-400 max-w-xl mx-auto mb-10 font-light">The era of spatial computing is here. Digital content blends seamlessly with your physical space.</p>
-                                <div class="flex space-x-4">
-                                    <button class="px-8 py-3 bg-white text-black rounded-full font-medium hover:bg-gray-200 transition">Learn more</button>
-                                    <button class="px-8 py-3 bg-transparent border border-white/30 text-white rounded-full font-medium hover:bg-white/10 transition backdrop-blur-sm">View specs</button>
-                                </div>
-                            </div>
-                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-600 rounded-full blur-[200px] opacity-20"></div>
-                            <div class="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-pink-600 rounded-full blur-[150px] opacity-10"></div>
-                        </div>`
-            },
-            marketplace: {
+            // ... (Other project data remains the same) ...
+             marketplace: {
                 code: `<!-- E-Marketplace Hero -->\n<div class="p-8 bg-white min-h-full">\n    <header class="text-center mb-12">\n        <p class="text-sm uppercase tracking-widest text-gray-500">Curated Goods</p>\n        <h1 class="text-5xl font-extrabold text-gray-900 mt-2">The Minimalist Collection</h1>\n        <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">สินค้าคุณภาพเยี่ยมที่คัดสรรมาอย่างพิถีพิถัน</p>\n    </header>\n    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">\n        <!-- Items would go here -->\n        <div class="bg-gray-50 border border-gray-100 p-4 rounded-lg text-center">\n             <div class="h-40 bg-gray-200 rounded mb-4"></div>\n             <h3 class="font-bold">Minimal Lamp</h3>\n             <p class="text-teal-600">฿4,500</p>\n        </div>\n    </div>\n</div>`,
-                preview: `<div class="p-8 bg-white min-h-full font-sans">
-                            <header class="text-center mb-12">
-                                <p class="text-sm uppercase tracking-widest text-gray-500">Curated Goods</p>
-                                <h1 class="text-5xl font-extrabold text-gray-900 mt-2">The Minimalist Collection</h1>
-                                <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">สินค้าคุณภาพเยี่ยมที่คัดสรรมาอย่างพิถีพิถัน ด้วยดีไซน์ที่เรียบง่ายและทันสมัย</p>
-                            </header>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                                <div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-sm hover:shadow-xl transition duration-300">
-                                    <img src="https://placehold.co/400x400/D1D5DB/1F2937?text=Lamp" class="w-full h-auto object-cover rounded-md mb-4 aspect-square">
-                                    <h3 class="text-lg font-semibold text-gray-800">Minimalist Desk Lamp</h3>
-                                    <div class="flex justify-between items-center mt-3">
-                                        <span class="text-xl font-bold text-gray-900">4,990 B</span>
-                                        <button class="px-3 py-1 text-xs text-white bg-[#37B2B5] rounded-full">View</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`
+                preview: `<div class="p-8 bg-white min-h-full font-sans">\n                            <header class="text-center mb-12">\n                                <p class="text-sm uppercase tracking-widest text-gray-500">Curated Goods</p>\n                                <h1 class="text-5xl font-extrabold text-gray-900 mt-2">The Minimalist Collection</h1>\n                                <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">สินค้าคุณภาพเยี่ยมที่คัดสรรมาอย่างพิถีพิถัน ด้วยดีไซน์ที่เรียบง่ายและทันสมัย</p>\n                            </header>\n                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">\n                                <div class="group bg-white p-4 rounded-lg border border-gray-100 shadow-sm hover:shadow-xl transition duration-300">\n                                    <img src="https://placehold.co/400x400/D1D5DB/1F2937?text=Lamp" class="w-full h-auto object-cover rounded-md mb-4 aspect-square">\n                                    <h3 class="text-lg font-semibold text-gray-800">Minimalist Desk Lamp</h3>\n                                    <div class="flex justify-between items-center mt-3">\n                                        <span class="text-xl font-bold text-gray-900">4,990 B</span>\n                                        <button class="px-3 py-1 text-xs text-white bg-[#37B2B5] rounded-full">View</button>\n                                    </div>\n                                </div>\n                            </div>\n                        </div>`
             }
         };
 
@@ -856,167 +693,185 @@
             modalOverlay.classList.remove('hidden');
         }
 
-        // === Submenu Handling Logic ===
+        // === Submenu Handling Logic (Generalized) ===
 
-        function isAiSettingsInlineOpen() {
-            return aiSettingsSubmenuInline.style.maxHeight !== '0px';
-        }
-
-        function closeAllSubMenus(excludeAiSettings = false) {
-            // Close all non-AI Settings flyouts
-            [projectHistorySubmenu, userManualSubmenu, designTemplatesSubmenu, profileSubmenu].forEach(el => el.classList.add('hidden'));
-            
-            // Remove active state from non-AI Settings buttons
-            [projectHistoryButton, userManualButton, designTemplatesButton, profileButton].forEach(el => el.classList.remove('active'));
-
-            // Handle AI Settings based on the exclusion flag
-            if (!excludeAiSettings) {
-                // If AI Settings inline is open, collapse it
-                if (isAiSettingsInlineOpen()) {
-                    aiSettingsSubmenuInline.style.maxHeight = '0px';
-                    aiSettingsArrow.classList.remove('rotate-90');
-                }
-                // Always ensure flyout is hidden and button is inactive
-                aiSettingsSubmenuFlyout.classList.add('hidden');
-                aiSettingsButton.classList.remove('active');
-            }
-        }
-
-        function toggleMenu(button, menu) {
-            const isHidden = menu.classList.contains('hidden');
-            closeAllSubMenus(false); // Close everything first
-            
-            if (isHidden) {
-                // Determine flyout position (always flyout for non-AI menu items)
-                const isSidebarCollapsed = sidebar.classList.contains('collapsed');
-                if (isSidebarCollapsed) {
-                    menu.style.left = '80px'; 
-                } else {
-                     menu.style.left = '100%';
-                     menu.style.marginLeft = '16px'; 
-                }
-
-                menu.classList.remove('hidden');
-                button.classList.add('active');
-            }
-        }
-        
-        function toggleAiSettings(e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const isCollapsed = sidebar.classList.contains('collapsed');
-            const isInlineOpen = isAiSettingsInlineOpen();
-
-            if (isCollapsed) {
-                // State 1: Sidebar COLLAPSED -> Use Flyout Menu
-                const isFlyoutHidden = aiSettingsSubmenuFlyout.classList.contains('hidden');
-                closeAllSubMenus(isFlyoutHidden); // Close others, keep AI open if it's already open
-
-                if (isFlyoutHidden) {
-                    // Open flyout
-                    aiSettingsSubmenuFlyout.style.left = '80px';
-                    aiSettingsSubmenuFlyout.classList.remove('hidden');
-                    aiSettingsButton.classList.add('active');
-                }
-            } else {
-                // State 2: Sidebar EXPANDED -> Use Inline Menu
-                closeAllSubMenus(isInlineOpen); // Close others, keep AI open/close handling separate
-
-                if (!isInlineOpen) {
-                    // Open inline menu
-                    aiSettingsSubmenuInline.style.maxHeight = aiSettingsSubmenuInline.scrollHeight + 'px';
-                    aiSettingsArrow.classList.add('rotate-90');
-                    aiSettingsButton.classList.add('active');
-                } else {
-                    // Close inline menu
-                    aiSettingsSubmenuInline.style.maxHeight = '0px';
-                    aiSettingsArrow.classList.remove('rotate-90');
-                    aiSettingsButton.classList.remove('active');
-                }
-            }
-        }
-
-        document.addEventListener('click', (e) => {
-            const menuContainers = [
-                document.getElementById('project-history-button').parentElement,
-                document.getElementById('user-manual-button').parentElement,
-                document.getElementById('design-templates-button').parentElement,
-                document.getElementById('profile-button').parentElement,
-                document.getElementById('ai-settings-group') // Check AI Settings group too
+        function closeAllSubMenus(excludeGroupId = null) {
+            // Arrays of menu group IDs
+            const groups = [
+                'project-history-group',
+                'ai-settings-group',
+                'design-templates-group',
+                'user-manual-group',
+                'profile-group'
             ];
-            
-            let clickedInsideMenu = false;
-            for (const container of menuContainers) {
-                if (container.contains(e.target)) {
-                    clickedInsideMenu = true;
-                    break;
-                }
-            }
 
-            if (!clickedInsideMenu && !modalOverlay.contains(e.target) && modalOverlay.classList.contains('hidden')) {
-                closeAllSubMenus(false);
+            groups.forEach(groupId => {
+                if (groupId === excludeGroupId) return; // Skip the one we are toggling
+
+                const group = document.getElementById(groupId);
+                if(!group) return;
+
+                // 1. Close Inline
+                const inlineMenu = group.querySelector('.submenu-inline');
+                const arrow = group.querySelector('.menu-arrow');
+                const button = group.querySelector('.menu-item');
+
+                if (inlineMenu) {
+                     inlineMenu.style.maxHeight = '0px';
+                }
+                if (arrow) arrow.classList.remove('rotate-90');
+                if (button) button.classList.remove('active');
+
+                // 2. Hide Flyout
+                const flyoutMenu = group.querySelector('[id$="-flyout"]'); // Select ID ending in -flyout
+                if (flyoutMenu) {
+                    flyoutMenu.classList.add('hidden');
+                }
+            });
+        }
+
+        function toggleMenu(buttonId, inlineId, flyoutId) {
+            const button = document.getElementById(buttonId);
+            const inlineMenu = document.getElementById(inlineId);
+            const flyoutMenu = document.getElementById(flyoutId);
+            const arrow = button.querySelector('.menu-arrow');
+            const group = button.closest('.menu-container');
+            const groupId = group ? group.id : null;
+
+            if (!button || !inlineMenu || !flyoutMenu) return;
+
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const isSidebarCollapsed = sidebar.classList.contains('collapsed');
+                
+                // Close other menus first, but skip closing THIS group if we are just toggling it
+                closeAllSubMenus(groupId);
+
+                if (isSidebarCollapsed) {
+                    // Logic for Collapsed Sidebar (Flyout)
+                    const isFlyoutHidden = flyoutMenu.classList.contains('hidden');
+                    
+                    if (isFlyoutHidden) {
+                         // Open flyout
+                         flyoutMenu.style.left = '80px'; 
+                         flyoutMenu.classList.remove('hidden');
+                         button.classList.add('active');
+                    } else {
+                         // Close flyout
+                         flyoutMenu.classList.add('hidden');
+                         button.classList.remove('active');
+                    }
+                } else {
+                    // Logic for Expanded Sidebar (Inline)
+                    const isInlineOpen = inlineMenu.style.maxHeight !== '0px';
+
+                    if (!isInlineOpen) {
+                        // Open inline
+                        inlineMenu.style.maxHeight = inlineMenu.scrollHeight + 'px';
+                        if(arrow) arrow.classList.add('rotate-90');
+                        button.classList.add('active');
+                    } else {
+                        // Close inline
+                        inlineMenu.style.maxHeight = '0px';
+                        if(arrow) arrow.classList.remove('rotate-90');
+                        button.classList.remove('active');
+                    }
+                }
+            });
+        }
+
+        // Initialize Menus
+        toggleMenu('project-history-button', 'project-history-submenu-inline', 'project-history-submenu-flyout');
+        toggleMenu('ai-settings-button', 'ai-settings-submenu-inline', 'ai-settings-submenu-flyout');
+        toggleMenu('design-templates-button', 'design-templates-submenu-inline', 'design-templates-submenu-flyout');
+        toggleMenu('user-manual-button', 'user-manual-submenu-inline', 'user-manual-submenu-flyout');
+        toggleMenu('profile-button', 'profile-submenu-inline', 'profile-submenu-flyout');
+
+        // Click outside to close menus
+        document.addEventListener('click', (e) => {
+            const allMenuGroups = document.querySelectorAll('.menu-container');
+            let clickedInside = false;
+            
+            allMenuGroups.forEach(group => {
+                if(group.contains(e.target)) clickedInside = true;
+            });
+
+            if (!clickedInside && !modalOverlay.contains(e.target) && modalOverlay.classList.contains('hidden')) {
+                closeAllSubMenus();
             }
         });
-
-        // Attach event listeners to all buttons
-        [ 
-            {btn: projectHistoryButton, menu: projectHistorySubmenu},
-            // AI Settings has its own handler now
-            {btn: userManualButton, menu: userManualSubmenu},
-            {btn: designTemplatesButton, menu: designTemplatesSubmenu},
-            {btn: profileButton, menu: profileSubmenu}
-        ].forEach(pair => pair.btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggleMenu(pair.btn, pair.menu);
-        }));
-
-        // Attach dedicated handler for AI Settings
-        aiSettingsButton.addEventListener('click', toggleAiSettings);
-
 
         // === Sidebar Collapsing Logic (The Slide Open/Close) ===
         function toggleSidebar() {
             const isCollapsed = sidebar.classList.contains('collapsed');
 
             // Close all menus before changing layout state
-            closeAllSubMenus(false); 
+            closeAllSubMenus(); 
 
             if (isCollapsed) {
-                // EXPAND: 20% / 30% / 50%
+                // EXPAND: 25% / 28% / 47%
                 sidebar.classList.remove('collapsed', 'w-[80px]');
-                sidebar.classList.add('w-[20%]');
+                sidebar.classList.add('w-[25%]'); // UPDATED
                 
                 chatPanel.classList.remove('flex-grow', 'chat-flex-ratio');
-                chatPanel.classList.add('w-[30%]');
+                chatPanel.classList.add('w-[28%]'); // UPDATED
                 
                 outputPanel.classList.remove('flex-grow', 'output-flex-ratio');
-                outputPanel.classList.add('w-[50%]');
+                outputPanel.classList.add('w-[47%]'); // UPDATED
 
-                sidebarToggle.classList.add('rotate-180');
-                sidebarTitle.innerHTML = 'AI Studio'; 
+                // FIX: Icon direction logic
+                sidebarToggle.classList.remove('rotate-180'); // Expanded (default) = Point Left (<)
+                
+                // Show text smooth
+                sidebarTitleText.classList.remove('w-0', 'opacity-0', 'ml-0', 'translate-x-[-10px]');
+                sidebarTitleText.classList.add('ml-3', 'opacity-100', 'translate-x-0');
+                sidebarTitleText.style.maxWidth = '200px';
+
+                // REVERT Header Layout to Horizontal
+                sidebarHeader.classList.add('flex-row', 'justify-between', 'px-3');
+                sidebarHeader.classList.remove('flex-col', 'justify-center', 'gap-1', 'px-0');
+                
+                // REVERT Button Size
+                sidebarToggle.classList.add('ml-auto', 'p-2');
+                sidebarToggle.classList.remove('p-1');
+                
+
             } else {
                 // COLLAPSE: 80px / remaining space (split 3:5 ratio)
-                sidebar.classList.remove('w-[20%]');
+                sidebar.classList.remove('w-[25%]'); // UPDATED
                 sidebar.classList.add('collapsed', 'w-[80px]');
                 
                 // Set L2 and L3 to grow with the remaining space, based on 3:5 ratio
-                chatPanel.classList.remove('w-[30%]');
+                chatPanel.classList.remove('w-[28%]'); // UPDATED
                 chatPanel.classList.add('flex-grow', 'chat-flex-ratio'); // 3 parts
 
-                outputPanel.classList.remove('w-[50%]');
+                outputPanel.classList.remove('w-[47%]'); // UPDATED
                 outputPanel.classList.add('flex-grow', 'output-flex-ratio'); // 5 parts
 
-                sidebarToggle.classList.remove('rotate-180');
-                sidebarTitle.innerHTML = 'AI'; 
+                // FIX: Icon direction logic
+                sidebarToggle.classList.add('rotate-180'); // Collapsed = Point Right (>)
+                
+                // Hide text smooth
+                sidebarTitleText.classList.remove('ml-3', 'opacity-100', 'translate-x-0');
+                sidebarTitleText.classList.add('opacity-0', 'ml-0', 'translate-x-[-10px]');
+                sidebarTitleText.style.maxWidth = '0px';
+
+                // CHANGE Header Layout to Vertical to avoid overlap
+                sidebarHeader.classList.remove('flex-row', 'justify-between', 'px-3');
+                sidebarHeader.classList.add('flex-col', 'justify-center', 'gap-1', 'px-0');
+
+                // CHANGE Button Size (Smaller)
+                sidebarToggle.classList.remove('ml-auto', 'p-2');
+                sidebarToggle.classList.add('p-1');
             }
         }
         sidebarToggle.addEventListener('click', toggleSidebar);
         // === End Sidebar Collapsing Logic ===
 
 
-        // View Switching (UPDATED for Neon Buttons and Header consistency)
+        // View Switching
         function switchView(viewName) {
             if (viewName === 'code') {
                 tabCode.classList.add('active');
@@ -1027,7 +882,6 @@
                 outputPanelHeader.classList.remove('bg-gray-100'); // Dark mode container
                 outputPanelHeader.classList.add('bg-gray-900');
                 
-                // ENABLE Copy button (consistent header elements)
                 copyButton.classList.remove('copy-disabled');
             } else {
                 tabPreview.classList.add('active');
@@ -1038,7 +892,6 @@
                 outputPanelHeader.classList.remove('bg-gray-900');
                 outputPanelHeader.classList.add('bg-gray-100'); // Light mode container
                 
-                // DISABLE Copy button (consistent header elements)
                 copyButton.classList.add('copy-disabled');
             }
         }
@@ -1051,7 +904,11 @@
             item.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                
+                // Close the specific group this item belongs to (if it's a flyout) or all menus
+                // For simplicity, just close all menus when a project is selected
                 closeAllSubMenus();
+
                 const pid = item.getAttribute('data-project');
                 if (projectData[pid]) {
                     codeContent.textContent = projectData[pid].code;
@@ -1061,7 +918,7 @@
             });
         });
 
-        // NEW: AI Tool Logic (Handles click on the 5 new menu items)
+        // AI Tool Logic
         document.querySelectorAll('.ai-tool-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -1073,7 +930,6 @@
                     {text: 'ยกเลิก', type: 'secondary'},
                     {text: 'ยืนยัน', type: 'primary', action: () => {
                         console.log(`Tool ${toolName} activated.`);
-                        // Placeholder for actual AI activation logic or chat message
                     }}
                 ]);
             });
@@ -1082,7 +938,6 @@
         // Copy
         copyButton.addEventListener('click', () => {
             const text = codeContent.textContent;
-            // Fallback for document.execCommand('copy') which works in iframe environment
             const textarea = document.createElement('textarea');
             textarea.value = text;
             document.body.appendChild(textarea);
@@ -1099,16 +954,7 @@
             }, 1500);
         });
 
-        // Undo/Redo click handlers (Placeholder)
-        undoButton.addEventListener('click', () => {
-            console.log('Undo clicked');
-        });
-
-        redoButton.addEventListener('click', () => {
-            console.log('Redo clicked');
-        });
-
-        // Modal Actions (Updated to use Submenu Button ID)
+        // Modal Actions
         newCodeButton.addEventListener('click', (e) => {
             e.preventDefault();
             closeAllSubMenus();
@@ -1121,8 +967,9 @@
                 }}
             ]);
         });
-
-        logoutButtonSubmenu.addEventListener('click', (e) => {
+        
+        // Handle Logout (Submenu & Inline)
+        const handleLogout = (e) => {
             e.preventDefault();
             e.stopPropagation();
             closeAllSubMenus();
@@ -1130,28 +977,29 @@
                 {text: 'ยกเลิก', type: 'secondary'},
                 {text: 'ตกลง', type: 'primary', action: () => console.log('Logged out')}
             ]);
-        });
+        };
+
+        if(logoutButtonSubmenu) logoutButtonSubmenu.addEventListener('click', handleLogout);
+        if(logoutButtonInline) logoutButtonInline.addEventListener('click', handleLogout);
 
         // Init
         window.addEventListener('DOMContentLoaded', function() {
-            // Set initial state: Expanded (20% for L1, 30% for L2, 50% for L3)
+            // Set initial state
             sidebar.classList.remove('w-[80px]', 'collapsed');
-            sidebar.classList.add('w-[20%]');
-            
+            sidebar.classList.add('w-[25%]'); // UPDATED
             chatPanel.classList.remove('flex-grow', 'chat-flex-ratio');
-            chatPanel.classList.add('w-[30%]');
-            
+            chatPanel.classList.add('w-[28%]'); // UPDATED
             outputPanel.classList.remove('flex-grow', 'output-flex-ratio');
-            outputPanel.classList.add('w-[50%]');
+            outputPanel.classList.add('w-[47%]'); // UPDATED
 
             // Load initial project
             codeContent.textContent = projectData.appleProduct.code;
             viewPreview.innerHTML = projectData.appleProduct.preview;
             switchView('preview'); 
             
-            // Adjust sidebar title (since it's initially 20%)
-            sidebarTitle.textContent = 'AI Studio';
-            sidebarToggle.classList.add('rotate-180');
+            // Adjust sidebar title
+            const logoHtml = '<img src="https://imagedelivery.net/ejQIToF7XvP93simjSd62w/cf160594-5170-458f-9bb7-675475135800/sm" alt="Logo" class="h-8 w-8 rounded-md object-cover">';
+            sidebarToggle.classList.remove('rotate-180');
         });
 
     </script>
